@@ -1,0 +1,6 @@
+
+@squid:S2131"Use "Integer.toString" instead.(•“àßøÿÿÿÿ8ñããµº+
+Psquid:S1068"4Remove this unused "mGoogleApiClient" private field.(Ÿõ¸Ú8­Ô­øº+
+?squid:S2131"Use "Double.toString" instead.(Ø°†ıÿÿÿÿ8À°¨¼º+
+squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ûúéü8üÛÃ¼º+
+Ssquid:S1135"2Complete the task associated to this TODO comment.(ŸüÈÒûÿÿÿÿ8ÀõÒøº+
