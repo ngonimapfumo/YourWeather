@@ -1,6 +1,7 @@
-package ngonim.xyz.yourweather;
+package ngonim.xyz.yourweather.weathermodels;
 
 public class Weather {
+    //super
 
     private String mIcon;
     private long mTime;

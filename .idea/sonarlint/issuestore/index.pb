@@ -13,3 +13,9 @@ l
 <app/src/main/java/ngonim/xyz/yourweather/CurrentWeather.java,6/a/6afc49e62c6b2495ccb069461b2b07f27d565c96
 e
 5app/src/main/java/ngonim/xyz/yourweather/Weather.java,2/8/28d6c49507afa147d30e4b0f66cfb6a4d9a29333
+A
+gradle.properties,2/a/2afbb999f001938c88fa43fc2ef52abf0f8213e4
+@
+local.properties,0/7/0712df971a99ac4d2fccb8e0fb19f377f3374cca
+?
+settings.gradle,0/5/05efc8b1657769a27696d478ded1e95f38737233

@@ -1,4 +1,4 @@
-package ngonim.xyz.yourweather;
+package ngonim.xyz.yourweather.ui;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -20,6 +20,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import ngonim.xyz.yourweather.R;
+import ngonim.xyz.yourweather.weathermodels.Current;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             "https://api.darksky.net/forecast/0b7621a8ed42749a4d70136dab97e9f9/-17.824858,31.053028";*/
     private String forecast = "https://api.darksky.net/forecast/" + APIKEY +
             "/" + latitude + "," + longitude;
-    private CurrentWeather mCurrentWeather;
+    private Current mCurrent;
     private TextView mTime;
     private TextView mTemperature;
     private TextView mHumidity;
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         final String jsonData = response.body().string();
                         Log.v(TAG, jsonData);
                         if(response.isSuccessful()) {
-                            mCurrentWeather = getCurrentDetails(jsonData);
+                            mCurrent = getCurrentDetails(jsonData);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -123,30 +125,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDisplay() {
-        mTemperature.setText(mCurrentWeather.getTemperatureInCelcius() + "");
-        mPrecipitation.setText(mCurrentWeather.getPrecipitation() + "%");
-        mHumidity.setText(mCurrentWeather.getHumidity() + "");
-        mSummary.setText(mCurrentWeather.getSummary()+ "");
-        Drawable drawable = getResources().getDrawable(mCurrentWeather.getIconId(), null);
+        mTemperature.setText(mCurrent.getTemperatureInCelcius() + "");
+        mPrecipitation.setText(mCurrent.getPrecipitation() + "%");
+        mHumidity.setText(mCurrent.getHumidity() + "");
+        mSummary.setText(mCurrent.getSummary()+ "");
+        Drawable drawable = getResources().getDrawable(mCurrent.getIconId(), null);
         mIconView.setImageDrawable(drawable);
-        mTime.setText(mCurrentWeather.getFormattedTime());
-        mLocationText.setText(mCurrentWeather.getTimeZone());
+        mTime.setText(mCurrent.getFormattedTime());
+        mLocationText.setText(mCurrent.getTimeZone());
     }
 
-    private CurrentWeather getCurrentDetails(String jsonData) throws JSONException {
+    private Current getCurrentDetails(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
         String timezone = forecast.getString("timezone");
         JSONObject currently =  forecast.getJSONObject("currently");
-        CurrentWeather currentWeather = new CurrentWeather();
-        currentWeather.setHumidity(currently.getDouble("humidity"));
-        currentWeather.setTime(currently.getLong("time"));
-        currentWeather.setIcon(currently.getString("icon"));
-        currentWeather.setPrecipitation(currently.getDouble("precipProbability"));
-        currentWeather.setSummary(currently.getString("summary"));
-        currentWeather.setTemperature(currently.getDouble("temperature"));
-        currentWeather.setTimeZone(timezone);
+        Current current = new Current();
+        current.setHumidity(currently.getDouble("humidity"));
+        current.setTime(currently.getLong("time"));
+        current.setIcon(currently.getString("icon"));
+        current.setPrecipitation(currently.getDouble("precipProbability"));
+        current.setSummary(currently.getString("summary"));
+        current.setTemperature(currently.getDouble("temperature"));
+        current.setTimeZone(timezone);
 
-        return currentWeather;
+        return current;
     }
 
     private boolean isNetworkAvailable() {

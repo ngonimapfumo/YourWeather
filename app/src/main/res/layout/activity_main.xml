@@ -9,7 +9,7 @@
     android:paddingBottom="16dp"
     android:paddingLeft="32dp"
     android:paddingRight="32dp"
-    tools:context="ngonim.xyz.yourweather.MainActivity">
+    tools:context="ngonim.xyz.yourweather.ui.MainActivity">
 
 
     <TextView

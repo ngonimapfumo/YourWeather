@@ -1,4 +1,4 @@
-package ngonim.xyz.yourweather;
+package ngonim.xyz.yourweather.ui;
 
 import android.app.Dialog;
 import android.app.DialogFragment;

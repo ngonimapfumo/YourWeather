@@ -1,14 +1,16 @@
-package ngonim.xyz.yourweather;
+package ngonim.xyz.yourweather.weathermodels;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import ngonim.xyz.yourweather.R;
+
 /**
  * Created by ngoni on 4/22/17.
  */
 
-public class CurrentWeather {
+public class Current {
     private String mIcon;
     private long mTime;
     private double mTemperature;
@@ -18,7 +20,7 @@ public class CurrentWeather {
     private String mTimeZone;
     private double mVisibility;
 
-    public CurrentWeather() {
+    public Current() {
     }
 
     public String getIcon() {

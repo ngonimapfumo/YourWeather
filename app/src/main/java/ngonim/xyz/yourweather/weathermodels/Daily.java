@@ -1,47 +1,54 @@
-package ngonim.xyz.yourweather;
+package ngonim.xyz.yourweather.weathermodels;
 
 /**
  * Created by ngoni on 7/7/17.
  */
 
-public class Hour {
+public class Daily extends Weather {
 
-    private double mTemperature;
+    public Daily() {
+    }
+
+    private double mMaxTemperature;
     private String mSummary;
     private long mTime;
     private String mIcon;
     private String mTimezone;
 
-    public Hour(){}
-
-    public double getTemperature() {
-        return mTemperature;
+    public double getMaxTemperature() {
+        return mMaxTemperature;
     }
 
-    public void setTemperature(double temperature) {
-        mTemperature = temperature;
+    public void setMaxTemperature(double maxTemperature) {
+        mMaxTemperature = maxTemperature;
     }
 
+    @Override
     public String getSummary() {
         return mSummary;
     }
 
+    @Override
     public void setSummary(String summary) {
         mSummary = summary;
     }
 
+    @Override
     public long getTime() {
         return mTime;
     }
 
+    @Override
     public void setTime(long time) {
         mTime = time;
     }
 
+    @Override
     public String getIcon() {
         return mIcon;
     }
 
+    @Override
     public void setIcon(String icon) {
         mIcon = icon;
     }
