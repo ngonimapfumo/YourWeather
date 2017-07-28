@@ -1,7 +1,0 @@
-
-Psquid:S1068"4Remove this unused "mGoogleApiClient" private field.(Ÿõ¸Ú8­Ô­øº+
-bsquid:HiddenFieldCheck"<Rename "forecast" which hides the field declared at line 38.(ÏÖ«48çäã•È+
-jsquid:MaximumInheritanceDepth"<This class has 8 parents which is greater than 5 authorized.(²Ú±Ž8çäã•È+
-Ssquid:S1135"2Complete the task associated to this TODO comment.(ŸüÈÒûÿÿÿÿ8ÀõÒøº+
-lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(³¡Äôýÿÿÿÿ8çäã•È+
-squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ûúéü8üÛÃ¼º+

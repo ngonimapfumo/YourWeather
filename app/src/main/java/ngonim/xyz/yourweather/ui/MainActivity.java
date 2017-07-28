@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import ngonim.xyz.yourweather.R;
 import ngonim.xyz.yourweather.weathermodels.Current;
+import ngonim.xyz.yourweather.weathermodels.Forecast;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -32,14 +33,14 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String APIKEY = "0b7621a8ed42749a4d70136dab97e9f9";
-    //TODO:hardcoded harare coordinates
+    //hardcoded harare coordinates
     private double latitude = -17.824858;
     private double longitude = 31.053028;
     /*private String forecast =
             "https://api.darksky.net/forecast/0b7621a8ed42749a4d70136dab97e9f9/-17.824858,31.053028";*/
     private String forecast = "https://api.darksky.net/forecast/" + APIKEY +
             "/" + latitude + "," + longitude;
-    private Current mCurrent;
+    private Forecast mForecast;
     private TextView mTime;
     private TextView mTemperature;
     private TextView mHumidity;
@@ -53,13 +54,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTime=(TextView)findViewById(R.id.timeLabel);
-        mTemperature=(TextView)findViewById(R.id.temperatureLabel);
-        mHumidity=(TextView)findViewById(R.id.humidityValue);
-        mPrecipitation=(TextView)findViewById(R.id.precipValue);
-        mIconView=(ImageView) findViewById(R.id.iconImageView);
-        mSummary=(TextView)findViewById(R.id.summaryText);
-        mLocationText=(TextView)findViewById(R.id.locationText);
+
+        mTime = (TextView)findViewById(R.id.timeLabel);
+        mTemperature = (TextView) findViewById(R.id.temperatureLabel);
+        mHumidity = (TextView) findViewById(R.id.humidityValue);
+        mPrecipitation = (TextView) findViewById(R.id.precipValue);
+        mIconView = (ImageView) findViewById(R.id.iconImageView);
+        mSummary = (TextView) findViewById(R.id.summaryText);
+        mLocationText = (TextView) findViewById(R.id.locationText);
+
         getForecast();
 
     }
@@ -72,15 +75,25 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menu_refresh){
+        if (item.getItemId() == R.id.menu_refresh) {
             getForecast();
             Toast.makeText(this, "Weather Updated", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private Forecast parseForecastDetails(String jsonData) throws JSONException {
+        Forecast forecast = new Forecast();
+        forecast.setCurrent(getCurrentDetails(jsonData));
+        return forecast;
+
+    }
+
+
     private void getForecast() {
-        if(isNetworkAvailable()) {
+
+        if (isNetworkAvailable()) {
+
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     .url(forecast)
@@ -91,7 +104,8 @@ public class MainActivity extends AppCompatActivity {
             call.enqueue(new Callback() {
                 @Override
                 public void onFailure
-                        (Call call, IOException e) {}
+                        (Call call, IOException e) {
+                }
 
                 @Override
                 public void onResponse
@@ -100,8 +114,8 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         final String jsonData = response.body().string();
                         Log.v(TAG, jsonData);
-                        if(response.isSuccessful()) {
-                            mCurrent = getCurrentDetails(jsonData);
+                        if (response.isSuccessful()) {
+                            mForecast = parseForecastDetails(jsonData);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -125,20 +139,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDisplay() {
-        mTemperature.setText(mCurrent.getTemperatureInCelcius() + "");
-        mPrecipitation.setText(mCurrent.getPrecipitation() + "%");
-        mHumidity.setText(mCurrent.getHumidity() + "");
-        mSummary.setText(mCurrent.getSummary()+ "");
-        Drawable drawable = getResources().getDrawable(mCurrent.getIconId(), null);
+        Current current = mForecast.getCurrent();
+        mTemperature.setText(current.getTemperatureInCelcius() + "");
+        mPrecipitation.setText(current.getPrecipitation() + "%");
+        mHumidity.setText(current.getHumidity() + "");
+        mSummary.setText(current.getSummary() + "");
+        Drawable drawable = getResources().getDrawable(current.getIconId(), null);
         mIconView.setImageDrawable(drawable);
-        mTime.setText(mCurrent.getFormattedTime());
-        mLocationText.setText(mCurrent.getTimeZone());
+        mTime.setText(current.getFormattedTime());
+        mLocationText.setText(current.getTimeZone());
     }
 
     private Current getCurrentDetails(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
         String timezone = forecast.getString("timezone");
-        JSONObject currently =  forecast.getJSONObject("currently");
+        JSONObject currently = forecast.getJSONObject("currently");
         Current current = new Current();
         current.setHumidity(currently.getDouble("humidity"));
         current.setTime(currently.getLong("time"));
