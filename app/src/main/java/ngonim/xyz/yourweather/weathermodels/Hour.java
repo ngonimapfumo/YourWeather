@@ -4,53 +4,49 @@ package ngonim.xyz.yourweather.weathermodels;
  * Created by ngoni on 7/7/17.
  */
 
-public class Hour {
-
-    private double mTemperature;
-    private String mSummary;
-    private long mTime;
-    private String mIcon;
-    private String mTimezone;
+public class Hour extends Weather {
 
     public Hour(){}
 
-    public double getTemperature() {
-        return mTemperature;
-    }
-
-    public void setTemperature(double temperature) {
-        mTemperature = temperature;
-    }
-
-    public String getSummary() {
-        return mSummary;
-    }
-
-    public void setSummary(String summary) {
-        mSummary = summary;
-    }
-
-    public long getTime() {
-        return mTime;
-    }
-
-    public void setTime(long time) {
-        mTime = time;
-    }
-
+    @Override
     public String getIcon() {
-        return mIcon;
+        return super.getIcon();
     }
 
+    @Override
     public void setIcon(String icon) {
-        mIcon = icon;
+        super.setIcon(icon);
     }
 
-    public String getTimezone() {
-        return mTimezone;
+    @Override
+    public long getTime() {
+        return super.getTime();
     }
 
-    public void setTimezone(String timezone) {
-        mTimezone = timezone;
+    @Override
+    public void setTime(long time) {
+        super.setTime(time);
+    }
+
+    @Override
+    public String getSummary() {
+        return super.getSummary();
+    }
+
+    @Override
+    public void setSummary(String summary) {
+        super.setSummary(summary);
+    }
+
+    @Override
+    public String getTimeZone() {
+        return super.getTimeZone();
+    }
+
+    @Override
+    public void setTimeZone(String timeZone) {
+        super.setTimeZone(timeZone);
     }
 }
+
+

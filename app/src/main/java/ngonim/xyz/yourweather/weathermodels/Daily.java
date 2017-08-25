@@ -9,55 +9,53 @@ public class Daily extends Weather {
     public Daily() {
     }
 
-    private double mMaxTemperature;
-    private String mSummary;
-    private long mTime;
-    private String mIcon;
-    private String mTimezone;
-
-    public double getMaxTemperature() {
-        return mMaxTemperature;
-    }
-
-    public void setMaxTemperature(double maxTemperature) {
-        mMaxTemperature = maxTemperature;
-    }
-
-    @Override
-    public String getSummary() {
-        return mSummary;
-    }
-
-    @Override
-    public void setSummary(String summary) {
-        mSummary = summary;
-    }
-
-    @Override
-    public long getTime() {
-        return mTime;
-    }
-
-    @Override
-    public void setTime(long time) {
-        mTime = time;
-    }
-
     @Override
     public String getIcon() {
-        return mIcon;
+        return super.getIcon();
     }
 
     @Override
     public void setIcon(String icon) {
-        mIcon = icon;
+        super.setIcon(icon);
     }
 
-    public String getTimezone() {
-        return mTimezone;
+    @Override
+    public long getTime() {
+        return super.getTime();
     }
 
-    public void setTimezone(String timezone) {
-        mTimezone = timezone;
+    @Override
+    public void setTime(long time) {
+        super.setTime(time);
+    }
+
+    @Override
+    public String getSummary() {
+        return super.getSummary();
+    }
+
+    @Override
+    public void setSummary(String summary) {
+        super.setSummary(summary);
+    }
+
+    @Override
+    public String getTimeZone() {
+        return super.getTimeZone();
+    }
+
+    @Override
+    public void setTimeZone(String timeZone) {
+        super.setTimeZone(timeZone);
+    }
+
+    @Override
+    public double getMaxTemp() {
+        return super.getMaxTemp();
+    }
+
+    @Override
+    public void setMaxTemp(double maxTemp) {
+        super.setMaxTemp(maxTemp);
     }
 }

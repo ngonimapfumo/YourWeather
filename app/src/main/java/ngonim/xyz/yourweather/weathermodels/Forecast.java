@@ -4,7 +4,7 @@ package ngonim.xyz.yourweather.weathermodels;
  * Created by ngoni on 7/7/17.
  */
 
-public class Forecast {
+public class Forecast extends Weather {
 
     private Current mCurrent;
     private Hour[] mHourlyForecast;
