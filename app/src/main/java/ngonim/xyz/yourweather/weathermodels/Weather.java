@@ -1,5 +1,9 @@
 package ngonim.xyz.yourweather.weathermodels;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class Weather {
     //super
 
@@ -122,4 +126,9 @@ public class Weather {
     public void setDewPoint(double dewPoint) {
         mDewPoint = dewPoint;
     }
+
+    public void setVisibility(){};
+
+
+
 }
