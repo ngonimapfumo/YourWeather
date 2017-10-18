@@ -19,7 +19,7 @@ public  abstract class Weather {
     private double mWindspeed;
     private double mDewPoint;
 
-    private Weather() {}
+    protected Weather() {}
 
     public String getIcon() {
         return mIcon;

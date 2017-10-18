@@ -6,7 +6,9 @@ package ngonim.xyz.yourweather.weathermodels;
 
 public class Hourly extends Weather {
 
-    public Hourly(){}
+    public Hourly(){
+        super();
+    }
 
     @Override
     public String getIcon() {
