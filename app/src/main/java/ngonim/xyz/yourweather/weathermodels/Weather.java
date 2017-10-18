@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public  abstract class Weather {
+public abstract class Weather {
     private String mIcon;
     private long mTime;
     private double mTemperature;
@@ -37,13 +37,12 @@ public  abstract class Weather {
         mTime = time;
     }
 
-    public double getTemperature() {
-        return mTemperature;
-    }
+
 
     public void setTemperature(double temperature) {
         mTemperature = temperature;
     }
+
 
     public double getHumidity() {
         return mHumidity;
@@ -53,9 +52,6 @@ public  abstract class Weather {
         mHumidity = humidity;
     }
 
-    public double getPrecipitation() {
-        return mPrecipitation;
-    }
 
     public void setPrecipitation(double precipitation) {
         mPrecipitation = precipitation;

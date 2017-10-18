@@ -11,7 +11,7 @@ import ngonim.xyz.yourweather.R;
  * Created by ngoni on 4/22/17.
  */
 
-public class Current {
+public class Current extends Weather{
     private String mIcon;
     private long mTime;
     private double mTemperature;
@@ -24,10 +24,12 @@ public class Current {
     public Current() {
     }
 
+    @Override
     public String getIcon() {
         return mIcon;
     }
 
+    @Override
     public void setIcon(String mIcon) {
         this.mIcon = mIcon;
     }
@@ -79,6 +81,7 @@ public class Current {
         return iconId;
     }
 
+    @Override
     public long getTime() {
         return mTime;
     }
@@ -91,6 +94,7 @@ public class Current {
         return dateFormat.format(date);
     }
 
+    @Override
     public void setTime(long mTime) {
         this.mTime = mTime;
     }
@@ -103,14 +107,17 @@ public class Current {
 
     }
 
+    @Override
     public void setTemperature(double mTemperature) {
         this.mTemperature = mTemperature;
     }
 
+    @Override
     public double getHumidity() {
         return mHumidity;
     }
 
+    @Override
     public void setHumidity(double mHumidity) {
         this.mHumidity = mHumidity;
     }
@@ -120,22 +127,27 @@ public class Current {
         return (int)Math.round(precipPercentage);
     }
 
+    @Override
     public void setPrecipitation(double mPrecipitation) {
         this.mPrecipitation = mPrecipitation;
     }
 
+    @Override
     public String getSummary() {
         return mSummary;
     }
 
+    @Override
     public void setSummary(String mSummary) {
         this.mSummary = mSummary;
     }
 
+    @Override
     public String getTimeZone() {
         return mTimeZone;
     }
 
+    @Override
     public void setTimeZone(String mTimeZone) {
         this.mTimeZone = mTimeZone;
     }
