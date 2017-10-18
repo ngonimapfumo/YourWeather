@@ -7,7 +7,7 @@ package ngonim.xyz.yourweather.weathermodels;
 public class Forecast extends Weather {
 
     private Current mCurrent;
-    private Hour[] mHourlyForecast;
+    private Hourly[] mHourlyForecast;
     private Daily[] mDailyForecast;
 
     public Current getCurrent() {
@@ -18,11 +18,11 @@ public class Forecast extends Weather {
         mCurrent = current;
     }
 
-    public Hour[] getHourlyForecast() {
+    public Hourly[] getHourlyForecast() {
         return mHourlyForecast;
     }
 
-    public void setHourlyForecast(Hour[] hourlyForecast) {
+    public void setHourlyForecast(Hourly[] hourlyForecast) {
         mHourlyForecast = hourlyForecast;
     }
 

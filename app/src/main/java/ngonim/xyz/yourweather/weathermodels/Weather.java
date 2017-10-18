@@ -4,9 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class Weather {
-    //super
-
+public  abstract class Weather {
     private String mIcon;
     private long mTime;
     private double mTemperature;
@@ -21,7 +19,7 @@ public class Weather {
     private double mWindspeed;
     private double mDewPoint;
 
-    public Weather() {}
+    private Weather() {}
 
     public String getIcon() {
         return mIcon;

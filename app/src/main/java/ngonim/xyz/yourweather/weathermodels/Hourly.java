@@ -4,9 +4,9 @@ package ngonim.xyz.yourweather.weathermodels;
  * Created by ngoni on 7/7/17.
  */
 
-public class Hour extends Weather {
+public class Hourly extends Weather {
 
-    public Hour(){}
+    public Hourly(){}
 
     @Override
     public String getIcon() {
