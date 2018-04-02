@@ -13,8 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView mSummary;
     private ImageView mIconView;
     private TextView mLocationText;
-    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         mIconView = (ImageView) findViewById(R.id.iconImageView);
         mSummary = (TextView) findViewById(R.id.summaryText);
         mLocationText = (TextView) findViewById(R.id.locationText);
-
         getForecast();
 
     }
@@ -83,9 +79,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Forecast parseForecastDetails(String jsonData) throws JSONException {
-        Forecast forecast = new Forecast();
-        forecast.setCurrent(getCurrentDetails(jsonData));
-        return forecast;
+        Forecast mForecast = new Forecast();
+        mForecast.setCurrent(getCurrentDetails(jsonData));
+        return mForecast;
 
     }
 
@@ -93,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
     private void getForecast() {
 
         if (isNetworkAvailable()) {
-
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     .url(forecast)
@@ -105,12 +100,14 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onFailure
                         (Call call, IOException e) {
+                    Log.d(TAG,e.getMessage());
                 }
 
                 @Override
                 public void onResponse
                         (Call call, Response response)
                         throws IOException {
+
                     try {
                         final String jsonData = response.body().string();
                         Log.v(TAG, jsonData);

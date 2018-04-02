@@ -25,11 +25,11 @@ Capp/src/main/java/ngonim/xyz/yourweather/weathermodels/Current.java,3/a/3a6a66
 gradlew.bat,2/a/2a45a911a8f1836b0b6c5b758962572012d8f8c3
 s
 Capp/src/main/java/ngonim/xyz/yourweather/weathermodels/Weather.java,8/c/8c9db1d2a4b76636334c5ec9d176473d73022187
-p
-@app/src/main/java/ngonim/xyz/yourweather/weathermodels/Hour.java,a/c/ac785d0424d95b03e14d3257ecd8b0924d8c91f7
 t
 Dapp/src/main/java/ngonim/xyz/yourweather/weathermodels/Forecast.java,c/8/c80c6ade6069e54378746afe8abe7bdb07812f12
 m
 =app/src/main/java/ngonim/xyz/yourweather/ui/MainActivity.java,3/b/3b08de4b2582b2b67ec68c6ca7adc6881bd51df9
 L
 .idea/dictionaries/ngoni.xml,2/1/214fe34318cb9e9800a7939b16249a9c027cab74
+r
+Bapp/src/main/java/ngonim/xyz/yourweather/weathermodels/Hourly.java,2/e/2e0630cb97428668c59064fdbab6cde18c64c107
