@@ -33,3 +33,5 @@ L
 .idea/dictionaries/ngoni.xml,2/1/214fe34318cb9e9800a7939b16249a9c027cab74
 r
 Bapp/src/main/java/ngonim/xyz/yourweather/weathermodels/Hourly.java,2/e/2e0630cb97428668c59064fdbab6cde18c64c107
+X
+(gradle/wrapper/gradle-wrapper.properties,f/b/fbe448ebfc3eb2d4e308f6b8b043666f5b57235e

@@ -1,10 +1,15 @@
 package ngonim.xyz.yourweather.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -46,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mSummary;
     private ImageView mIconView;
     private TextView mLocationText;
+    private LocationManager mLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +68,11 @@ public class MainActivity extends AppCompatActivity {
         getForecast();
 
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_refresh) {
@@ -85,6 +89,37 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private boolean checkLocation(){
+    if (!isLocationEnabled())
+    showAlert();
+
+        return isLocationEnabled();
+    }
+
+    private boolean isLocationEnabled() {
+        return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private void showAlert(){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Enable Location")
+                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
+                        "use this app")
+                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    }
+                });
+        dialog.show();
+    }
 
     private void getForecast() {
 
@@ -179,3 +214,5 @@ public class MainActivity extends AppCompatActivity {
         a.show(getFragmentManager(), "error_dialog");
     }
 }
+//private locationListener
+
