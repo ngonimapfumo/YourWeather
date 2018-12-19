@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView mSummary;
     private ImageView mIconView;
     private TextView mLocationText;
-    private LocationManager mLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +83,28 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_refresh) {
+       /* if (item.getItemId() == R.id.menu_refresh) {
                 getForecast();
-                Toast.makeText(this, "Weather Updated", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.WeatherUpdatedText,
+                        Toast.LENGTH_SHORT).show();
 
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);*/
+       int position = item.getItemId();
+       switch (position){
+           case R.id.menu_refresh:
+               getForecast();
+               Toast.makeText(this, R.string.WeatherUpdatedText,
+                       Toast.LENGTH_SHORT).show();
+               break;
+
+
+           case R.id.invite_menu:
+               Intent n = new Intent(this, SettingsActivity.class);
+               startActivity(n);
+               break;
+       }
+       return super.onOptionsItemSelected(item);
     }
 
     private Forecast parseForecastDetails(String jsonData) throws JSONException {
@@ -99,33 +114,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-    /*public boolean isLocationServicesAvailable(Context context) {
-        int locationMode = 0;
-        String locationProviders;
-        boolean isAvailable = false;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            try {
-                locationMode = Settings.Secure.getInt(context.getContentResolver(),
-                        Settings.Secure.LOCATION_MODE);
-            } catch (Settings.SettingNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            isAvailable = (locationMode != Settings.Secure.LOCATION_MODE_OFF);
-        } else {
-            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-            isAvailable = !TextUtils.isEmpty(locationProviders);
-        }
-
-        boolean coarsePermissionCheck = (ContextCompat.checkSelfPermission(context,
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
-        boolean finePermissionCheck = (ContextCompat.checkSelfPermission(context,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
-
-        return isAvailable && (coarsePermissionCheck || finePermissionCheck);
-    }*/
 
 
     public boolean isGPSEnabled(){
