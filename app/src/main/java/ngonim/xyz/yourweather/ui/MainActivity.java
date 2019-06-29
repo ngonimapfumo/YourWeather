@@ -98,11 +98,6 @@ public class MainActivity extends AppCompatActivity {
                        Toast.LENGTH_SHORT).show();
                break;
 
-
-           case R.id.invite_menu:
-               Intent n = new Intent(this, SettingsActivity.class);
-               startActivity(n);
-               break;
        }
        return super.onOptionsItemSelected(item);
     }
