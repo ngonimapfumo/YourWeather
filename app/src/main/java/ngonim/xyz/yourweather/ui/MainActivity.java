@@ -256,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
         mLocationText.setText(current.getTimeZone());
     }
 
+    //todo:dsj
     private Current getCurrentDetails(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
         String timezone = forecast.getString("timezone");
