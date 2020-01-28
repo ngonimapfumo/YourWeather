@@ -36,16 +36,6 @@ public class Current extends Weather{
 
     public int getIconId(){
         int iconId = R.mipmap.clear_day;
-        /*clear-day,
-         clear-night,
-         rain,
-         snow,
-         sleet,
-         wind,
-         fog,
-         cloudy,
-         partly-cloudy-day,
-         or partly-cloudy-night*/
 
         if("clear-day".equals(mIcon)){
             iconId = R.mipmap.clear_day;
@@ -159,4 +149,5 @@ public class Current extends Weather{
     public void setVisibility(double visibility) {
         mVisibility = visibility;
     }
+
 }

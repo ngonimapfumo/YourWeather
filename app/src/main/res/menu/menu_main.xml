@@ -6,11 +6,8 @@
         android:title="Refresh"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/fresh_config_menu"
+        android:id="@+id/add_city"
         android:title="Add City"
         app:showAsAction="never"/>
-    <item
-        android:id="@+id/invite_menu"
-        android:title="Settings"/>
 
 </menu>

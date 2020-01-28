@@ -1,9 +1,5 @@
 package ngonim.xyz.yourweather.weathermodels;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 public abstract class Weather {
     private String mIcon;
     private long mTime;
@@ -19,7 +15,9 @@ public abstract class Weather {
     private double mWindspeed;
     private double mDewPoint;
 
-    protected Weather() {}
+
+    protected Weather() {
+    }
 
     public String getIcon() {
         return mIcon;
@@ -36,7 +34,6 @@ public abstract class Weather {
     public void setTime(long time) {
         mTime = time;
     }
-
 
 
     public void setTemperature(double temperature) {
@@ -121,7 +118,10 @@ public abstract class Weather {
         mDewPoint = dewPoint;
     }
 
-    public void setVisibility(){};
+    public void setVisibility() {
+    }
+
+    ;
 
 
 

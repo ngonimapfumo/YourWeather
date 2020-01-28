@@ -32,6 +32,8 @@
         android:layout_toRightOf="@+id/temperatureLabel"
         app:srcCompat="@mipmap/degree" />
 
+
+
     <TextView
         android:id="@+id/timeLabel"
         android:layout_width="wrap_content"
