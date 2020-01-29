@@ -65,12 +65,9 @@ public class MainActivity extends AppCompatActivity {
         mIconView = findViewById(R.id.iconImageView);
         mSummary = findViewById(R.id.summaryText);
         mLocationText = findViewById(R.id.locationText);
-
         getForecast();
         fetchLoc();
-        if (!isGPSEnabled()) {
-            showAlert();
-        }
+
 
     }
 
@@ -107,14 +104,6 @@ public class MainActivity extends AppCompatActivity {
         return mForecast;
 
     }
-
-
-    public boolean isGPSEnabled() {
-        LocationManager locationManager = (LocationManager)
-                this.getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
-
 
     private void showAlert() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -202,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onProviderDisabled(String provider) {
-                Toast.makeText(MainActivity.this, "Network is switched off, please switch on for weather updates", Toast.LENGTH_SHORT).show();
+                showAlert();
 
             }
         };
@@ -211,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchLoc() {
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
@@ -248,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
         Current current = mForecast.getCurrent();
         mTemperature.setText(current.getTemperatureInCelcius() + "");
         mPrecipitation.setText(current.getPrecipitation() + "%");
-        mHumidity.setText(current.getHumidity() + "");
+        mHumidity.setText(current.getHumidity() + "%");
         mSummary.setText(current.getSummary() + "");
         Drawable drawable = getResources().getDrawable(current.getIconId(), null);
         mIconView.setImageDrawable(drawable);
@@ -256,7 +244,6 @@ public class MainActivity extends AppCompatActivity {
         mLocationText.setText(current.getTimeZone());
     }
 
-    //todo:dsj
     private Current getCurrentDetails(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
         String timezone = forecast.getString("timezone");
@@ -269,7 +256,6 @@ public class MainActivity extends AppCompatActivity {
         current.setSummary(currently.getString("summary"));
         current.setTemperature(currently.getDouble("temperature"));
         current.setTimeZone(timezone);
-
         return current;
     }
 
