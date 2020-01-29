@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         switch (position) {
             case R.id.menu_refresh:
                 if (!isNetworkAvailable()) {
-                    Toast.makeText(this, "no data connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.NO_DATA_CONN), Toast.LENGTH_SHORT).show();
                 } else {
                     getForecast();
                 }
@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.add_city:
 
                 //todo ffdgffg
+                break;
 
         }
         return super.onOptionsItemSelected(item);
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mLocationListener = new LocationListener() {
             @Override
-            public void onLocationChanged(Location location) {
+            public void onLocationChanged(final Location location) {
                 final String forecast = "https://api.darksky.net/forecast/" + APIKEY +
                         "/" + location.getLatitude() + "," + location.getLongitude();
                 if (isNetworkAvailable()) {
@@ -197,6 +198,11 @@ public class MainActivity extends AppCompatActivity {
         };
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        //todo: dpress exit
     }
 
     private void fetchLoc() {
