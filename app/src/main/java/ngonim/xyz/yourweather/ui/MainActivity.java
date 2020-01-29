@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (itemId == R.id.add_city) {
             //todo: add activity for picker
+            Toast.makeText(this, "currently under development", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
