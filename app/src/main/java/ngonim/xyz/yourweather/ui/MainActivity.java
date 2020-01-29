@@ -79,30 +79,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int position = item.getItemId();
-        switch (position) {
-            case R.id.menu_refresh:
-                if (!isNetworkAvailable()) {
-                    Toast.makeText(this, getString(R.string.NO_DATA_CONN), Toast.LENGTH_SHORT).show();
-                } else {
-                    getForecast();
-                }
-                break;
-
-
-            case R.id.add_city:
-
-                //todo ffdgffg
-                break;
-
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_refresh) {
+            if (!isNetworkAvailable()) {
+                Toast.makeText(this, getString(R.string.NO_DATA_CONN), Toast.LENGTH_SHORT).show();
+            } else {
+                getForecast();
+            }
+        } else if (itemId == R.id.add_city) {
+            //todo: add activity for picker
         }
+
         return super.onOptionsItemSelected(item);
     }
 
     private Forecast parseForecastDetails(String jsonData) throws JSONException {
-        Forecast mForecast = new Forecast();
-        mForecast.setCurrent(getCurrentDetails(jsonData));
-        return mForecast;
+        Forecast mForecast1 = new Forecast();
+        mForecast1.setCurrent(getCurrentDetails(jsonData));
+        return mForecast1;
 
     }
 
