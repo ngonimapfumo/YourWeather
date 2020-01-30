@@ -23,7 +23,6 @@
         android:textSize="150sp" />
 
     <ImageView
-        android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/temperatureLabel"
@@ -83,7 +82,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/precipLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -108,7 +106,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/humidityLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
