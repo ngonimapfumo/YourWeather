@@ -14,6 +14,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                         Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(myIntent);
+                        startActivityForResult(myIntent,1);
                     }
                 })
                 .setNegativeButton("OK", new DialogInterface.OnClickListener() {
@@ -122,6 +123,15 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1){
+            if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                showAlert();
+            }
+        }
+    }
 
     private void getForecast() {
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -130,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationChanged(final Location location) {
                 final String forecast = "https://api.darksky.net/forecast/" + APIKEY +
                         "/" + location.getLatitude() + "," + location.getLongitude();
+                Log.d("Coordinates", location.getLatitude() + location.getLongitude()+"");
                 if (isNetworkAvailable()) {
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
@@ -146,8 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onResponse
-                                (Call call, Response response)
-                                throws IOException {
+                                (Call call, Response response) {
 
                             try {
                                 final String jsonData = response.body().string();
@@ -194,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
 
     @Override
     public void onBackPressed() {

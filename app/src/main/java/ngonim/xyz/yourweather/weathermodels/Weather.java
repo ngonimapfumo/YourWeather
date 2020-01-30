@@ -120,9 +120,4 @@ public abstract class Weather {
 
     public void setVisibility() {
     }
-
-    ;
-
-
-
 }
