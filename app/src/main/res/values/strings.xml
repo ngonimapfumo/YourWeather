@@ -10,4 +10,5 @@
     <!-- Example settings for Notifications -->
 
     <string name="NO_DATA_CONN">no data connection</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

@@ -1,10 +1,8 @@
 package ngonim.xyz.yourweather.ui;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,17 +12,21 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,11 +56,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLocationText;
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         mTime = findViewById(R.id.timeLabel);
         mTemperature = findViewById(R.id.temperatureLabel);
         mHumidity = findViewById(R.id.humidityValue);
@@ -67,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         mSummary = findViewById(R.id.summaryText);
         mLocationText = findViewById(R.id.locationText);
         getForecast();
-        fetchLoc();
+        //fetchLoc();
     }
 
     @Override
@@ -109,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                         Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivityForResult(myIntent,1);
+                        startActivityForResult(myIntent, 1);
                     }
                 })
                 .setNegativeButton("OK", new DialogInterface.OnClickListener() {
@@ -124,21 +128,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==1){
-            if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        if (requestCode == 1) {
+            if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 showAlert();
             }
         }
     }
 
     private void getForecast() {
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        mLocationListener = new LocationListener() {
+
+        mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
-            public void onLocationChanged(final Location location) {
+            public void onSuccess(Location location) {
                 final String forecast = "https://api.darksky.net/forecast/" + APIKEY +
                         "/" + location.getLatitude() + "," + location.getLongitude();
-                Log.d("Coordinates", location.getLatitude() + location.getLongitude()+"");
+                Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
                 if (isNetworkAvailable()) {
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
@@ -181,24 +185,10 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                 }
-            }
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
+
 
             }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-                showAlert();
-
-            }
-        };
-
+        });
 
     }
 
@@ -208,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         //todo: dpress exit
     }
 
-    private void fetchLoc() {
+    /*private void fetchLoc() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
@@ -236,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                 0, mLocationListener);
 
 
-    }
+    }*/
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
