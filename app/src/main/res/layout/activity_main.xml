@@ -19,7 +19,7 @@
         android:layout_centerInParent="true"
         android:layout_marginTop="32dp"
         android:text="--"
-        android:textColor="#90FFFFFF"
+        android:textColor="@color/def_txt_color"
         android:textSize="150sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,13 +51,13 @@
         android:layout_below="@id/summaryText"
         android:layout_centerHorizontal="true"
         android:text=""
-        android:textColor="#80FFFFFF"
+        android:textColor="@color/def_txt_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/summaryText"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.457"
         tools:text="12:28 AM" />
 
     <TextView
@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/timeLabel"
         android:layout_centerHorizontal="true"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/def_txt_color"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/iconImageView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -164,7 +164,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:text=""
-        android:textColor="#FFFFFF"
+        android:textColor="@color/def_txt_color"
         android:textSize="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -172,5 +172,20 @@
         app:layout_constraintTop_toBottomOf="@+id/iconImageView"
         app:layout_constraintVertical_bias="0.376"
         tools:text="Mostly Cloudy" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="Powered by Dark Sky"
+        android:textColor="@color/def_txt_color"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
