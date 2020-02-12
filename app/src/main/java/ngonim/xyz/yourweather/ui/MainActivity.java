@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -34,8 +33,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import ngonim.xyz.yourweather.R;
-import ngonim.xyz.yourweather.weathermodels.Current;
-import ngonim.xyz.yourweather.weathermodels.Forecast;
+import ngonim.xyz.yourweather.models.Current;
+import ngonim.xyz.yourweather.models.Forecast;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -54,9 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView mSummary;
     private ImageView mIconView;
     private TextView mLocationText;
-    private LocationManager mLocationManager;
-    private LocationListener mLocationListener;
     private FusedLocationProviderClient mFusedLocationProviderClient;
+    LocationManager mLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         mSummary = findViewById(R.id.summaryText);
         mLocationText = findViewById(R.id.locationText);
         getForecast();
-        //fetchLoc();
     }
 
     @Override
@@ -104,19 +101,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void showAlert() {
+    private void showAlert(String title, String message, String positiveMessageButtonText, String negativeMessageButtonText) {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Enable Location")
-                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
-                        "use this app")
-                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
+        dialog.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(positiveMessageButtonText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                         Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivityForResult(myIntent, 1);
                     }
                 })
-                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                .setNegativeButton(negativeMessageButtonText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
@@ -130,7 +126,8 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                showAlert();
+                showAlert("Enable Location","\"Your Locations Settings is set to 'Off'.\\nPlease Enable Location to \" +\n" +
+                        "                        \"use this app\"", "Location Settings", "OK");
             }
         }
     }
@@ -197,37 +194,6 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         //todo: dpress exit
     }
-
-    /*private void fetchLoc() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.INTERNET}
-                        , 10);
-            }
-            return;
-        }
-
-        if (ActivityCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                500,
-                0, mLocationListener);
-
-
-    }*/
-
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void updateDisplay() {

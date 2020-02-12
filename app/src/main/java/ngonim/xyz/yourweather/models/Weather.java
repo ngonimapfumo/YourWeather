@@ -1,4 +1,4 @@
-package ngonim.xyz.yourweather.weathermodels;
+package ngonim.xyz.yourweather.models;
 
 public abstract class Weather {
     private String mIcon;

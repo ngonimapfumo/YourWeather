@@ -1,4 +1,4 @@
-package ngonim.xyz.yourweather.weathermodels;
+package ngonim.xyz.yourweather.models;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
