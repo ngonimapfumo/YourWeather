@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -56,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLocationText;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     LocationManager mLocationManager;
+
+    private boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                showAlert("Enable Location","\"Your Locations Settings is set to 'Off'.\\nPlease Enable Location to \" +\n" +
+                showAlert("Enable Location", "\"Your Locations Settings is set to 'Off'.\\nPlease Enable Location to \" +\n" +
                         "                        \"use this app\"", "Location Settings", "OK");
             }
         }
@@ -193,7 +196,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //todo: dpress exit
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+        }
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, getString(R.string.press_back_to_exit), Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+
+            }
+        }, 2000);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
