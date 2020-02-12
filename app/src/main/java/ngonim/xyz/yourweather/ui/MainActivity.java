@@ -35,6 +35,7 @@ import java.io.IOException;
 import ngonim.xyz.yourweather.R;
 import ngonim.xyz.yourweather.models.Current;
 import ngonim.xyz.yourweather.models.Forecast;
+import ngonim.xyz.yourweather.models.Ut;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     });
                                 } else {
-                                    errorAlert();
+                                    Ut.alert(MainActivity.this, "oops", "something went wrong");
                                 }
 
                             } catch (IOException | JSONException e) {
@@ -234,9 +235,5 @@ public class MainActivity extends AppCompatActivity {
         return isAvailabe;
     }
 
-    private void errorAlert() {
-        AlertDialogFragment a = new AlertDialogFragment();
-        a.show(getFragmentManager(), "error_dialog");
-    }
 }
 
