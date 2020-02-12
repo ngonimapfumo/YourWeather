@@ -1,4 +1,4 @@
-package ngonim.xyz.yourweather.weathermodels;
+package ngonim.xyz.yourweather.models;
 
 public abstract class Weather {
     private String mIcon;
@@ -120,9 +120,4 @@ public abstract class Weather {
 
     public void setVisibility() {
     }
-
-    ;
-
-
-
 }

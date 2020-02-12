@@ -1,4 +1,4 @@
-package ngonim.xyz.yourweather.weathermodels;
+package ngonim.xyz.yourweather.models;
 
 /**
  * Created by ngoni on 7/7/17.

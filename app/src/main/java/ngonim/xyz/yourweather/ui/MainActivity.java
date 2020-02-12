@@ -1,23 +1,16 @@
 package ngonim.xyz.yourweather.ui;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,14 +18,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
 import ngonim.xyz.yourweather.R;
-import ngonim.xyz.yourweather.weathermodels.Current;
-import ngonim.xyz.yourweather.weathermodels.Forecast;
+import ngonim.xyz.yourweather.models.Current;
+import ngonim.xyz.yourweather.models.Forecast;
+import ngonim.xyz.yourweather.models.Ut;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -51,13 +54,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView mSummary;
     private ImageView mIconView;
     private TextView mLocationText;
-    private LocationManager mLocationManager;
-    private LocationListener mLocationListener;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    LocationManager mLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         mTime = findViewById(R.id.timeLabel);
         mTemperature = findViewById(R.id.temperatureLabel);
         mHumidity = findViewById(R.id.humidityValue);
@@ -65,13 +69,7 @@ public class MainActivity extends AppCompatActivity {
         mIconView = findViewById(R.id.iconImageView);
         mSummary = findViewById(R.id.summaryText);
         mLocationText = findViewById(R.id.locationText);
-
         getForecast();
-        fetchLoc();
-        if (!isGPSEnabled()) {
-            showAlert();
-        }
-
     }
 
     @Override
@@ -82,53 +80,40 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int position = item.getItemId();
-        switch (position) {
-            case R.id.menu_refresh:
-                if (!isNetworkAvailable()) {
-                    Toast.makeText(this, "no data connection", Toast.LENGTH_SHORT).show();
-                } else {
-                    getForecast();
-                }
-                break;
-
-
-            case R.id.add_city:
-
-                //todo ffdgffg
-
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_refresh) {
+            if (!isNetworkAvailable()) {
+                Toast.makeText(this, getString(R.string.NO_DATA_CONN), Toast.LENGTH_SHORT).show();
+            } else {
+                getForecast();
+            }
+        } else if (itemId == R.id.add_city) {
+            //todo: add activity for picker
+            Toast.makeText(this, "currently under development", Toast.LENGTH_SHORT).show();
         }
+
         return super.onOptionsItemSelected(item);
     }
 
     private Forecast parseForecastDetails(String jsonData) throws JSONException {
-        Forecast mForecast = new Forecast();
-        mForecast.setCurrent(getCurrentDetails(jsonData));
-        return mForecast;
+        Forecast mForecast1 = new Forecast();
+        mForecast1.setCurrent(getCurrentDetails(jsonData));
+        return mForecast1;
 
     }
 
-
-    public boolean isGPSEnabled() {
-        LocationManager locationManager = (LocationManager)
-                this.getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
-
-
-    private void showAlert() {
+    private void showAlert(String title, String message, String positiveMessageButtonText, String negativeMessageButtonText) {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Enable Location")
-                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
-                        "use this app")
-                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
+        dialog.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(positiveMessageButtonText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                         Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(myIntent);
+                        startActivityForResult(myIntent, 1);
                     }
                 })
-                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                .setNegativeButton(negativeMessageButtonText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
@@ -137,14 +122,25 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                showAlert("Enable Location","\"Your Locations Settings is set to 'Off'.\\nPlease Enable Location to \" +\n" +
+                        "                        \"use this app\"", "Location Settings", "OK");
+            }
+        }
+    }
 
     private void getForecast() {
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        mLocationListener = new LocationListener() {
+
+        mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
-            public void onLocationChanged(Location location) {
+            public void onSuccess(Location location) {
                 final String forecast = "https://api.darksky.net/forecast/" + APIKEY +
                         "/" + location.getLatitude() + "," + location.getLongitude();
+                Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
                 if (isNetworkAvailable()) {
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
@@ -161,8 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onResponse
-                                (Call call, Response response)
-                                throws IOException {
+                                (Call call, Response response) {
 
                             try {
                                 final String jsonData = response.body().string();
@@ -178,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     });
                                 } else {
-                                    errorAlert();
+                                    Ut.alert(MainActivity.this, "oops", "something went wrong");
                                 }
 
                             } catch (IOException | JSONException e) {
@@ -188,67 +183,25 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                 }
-            }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
 
             }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-                Toast.makeText(MainActivity.this, "Network is switched off, please switch on for weather updates", Toast.LENGTH_SHORT).show();
-
-            }
-        };
-
+        });
 
     }
 
-    private void fetchLoc() {
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.INTERNET}
-                        , 10);
-            }
-            return;
-        }
-
-
-        if (ActivityCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                500,
-                0, mLocationListener);
-
-
+    @Override
+    public void onBackPressed() {
+        //todo: dpress exit
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void updateDisplay() {
         Current current = mForecast.getCurrent();
         mTemperature.setText(current.getTemperatureInCelcius() + "");
         mPrecipitation.setText(current.getPrecipitation() + "%");
-        mHumidity.setText(current.getHumidity() + "");
+        mHumidity.setText(current.getHumidity() + "%");
         mSummary.setText(current.getSummary() + "");
         Drawable drawable = getResources().getDrawable(current.getIconId(), null);
         mIconView.setImageDrawable(drawable);
@@ -256,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
         mLocationText.setText(current.getTimeZone());
     }
 
-    //todo:dsj
     private Current getCurrentDetails(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
         String timezone = forecast.getString("timezone");
@@ -269,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
         current.setSummary(currently.getString("summary"));
         current.setTemperature(currently.getDouble("temperature"));
         current.setTimeZone(timezone);
-
         return current;
     }
 
@@ -284,9 +235,5 @@ public class MainActivity extends AppCompatActivity {
         return isAvailabe;
     }
 
-    private void errorAlert() {
-        AlertDialogFragment a = new AlertDialogFragment();
-        a.show(getFragmentManager(), "error_dialog");
-    }
 }
 
