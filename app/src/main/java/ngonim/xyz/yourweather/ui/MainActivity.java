@@ -91,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
                 getForecast();
             }
         } else if (itemId == R.id.add_city) {
-            //todo: add activity for picker
-            Toast.makeText(this, "currently under development", Toast.LENGTH_SHORT).show();
+            //todo: add activity for city picker
+            showAlert("ALERT","Currently under development", "OK","");
         }
 
         return super.onOptionsItemSelected(item);
@@ -176,7 +176,8 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     });
                                 } else {
-                                    Ut.alert(MainActivity.this, "oops", "something went wrong");
+                                    showAlert("ALERT","oops, something went wrong",
+                                            "OK","");
                                 }
 
                             } catch (IOException | JSONException e) {
