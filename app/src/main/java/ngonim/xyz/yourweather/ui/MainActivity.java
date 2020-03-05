@@ -38,7 +38,6 @@ import java.io.IOException;
 import ngonim.xyz.yourweather.R;
 import ngonim.xyz.yourweather.models.Current;
 import ngonim.xyz.yourweather.models.Forecast;
-import ngonim.xyz.yourweather.models.Ut;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -74,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
         mIconView = findViewById(R.id.iconImageView);
         mSummary = findViewById(R.id.summaryText);
         mLocationText = findViewById(R.id.locationText);
+
         getForecast();
+
     }
 
     @Override
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -140,18 +142,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void getForecast() {
 
+
             mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
 
                     //todo: edge case to be fixed
-                /*location=null;
+                    if(location==null){
+                        return;
+                    }
 
-                if(location==null){
-                    mFusedLocationProviderClient.flushLocations();
-                    Toast.makeText(MainActivity.this, "no fused location scenario", Toast.LENGTH_LONG).show();
-                    return;
-                }*/
+
                     final String forecast = "https://api.darksky.net/forecast/" + APIKEY +
                             "/" + location.getLatitude() + "," + location.getLongitude();
                     Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
