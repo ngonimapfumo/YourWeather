@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         mLocationText = findViewById(R.id.locationText);
         mProgressBar = findViewById(R.id.progBar);
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermission();
         }
@@ -108,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (itemId == R.id.add_city) {
             //todo: add activity for city picker
+            //
             showAlert("ALERT", "Currently under development", "OK", "");
         }
 
