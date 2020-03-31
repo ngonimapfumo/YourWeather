@@ -171,8 +171,7 @@ public class MainActivity extends AppCompatActivity {
                     if(location==null){
                         return;
                     }
-
-
+                    
                     final String forecast = "https://api.darksky.net/forecast/" + APIKEY +
                             "/" + location.getLatitude() + "," + location.getLongitude();
                     Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
