@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient"
     android:padding="16dp"
     android:paddingLeft="32dp"
     android:paddingRight="32dp"
@@ -18,7 +17,6 @@
         android:layout_centerInParent="true"
         android:layout_marginTop="32dp"
         android:text="--"
-        android:textColor="@color/def_txt_color"
         android:textSize="150sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,10 +35,10 @@
         android:layout_toRightOf="@+id/temperatureLabel"
         app:layout_constraintBottom_toBottomOf="@+id/temperatureLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.295"
+        app:layout_constraintHorizontal_bias="0.195"
         app:layout_constraintStart_toEndOf="@+id/temperatureLabel"
         app:layout_constraintTop_toTopOf="@+id/temperatureLabel"
-        app:layout_constraintVertical_bias="0.213"
+        app:layout_constraintVertical_bias="0.322"
         app:srcCompat="@mipmap/degree" />
 
     <TextView
@@ -50,7 +48,6 @@
         android:layout_below="@id/summaryText"
         android:layout_centerHorizontal="true"
         android:text=""
-        android:textColor="@color/def_txt_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -65,7 +62,6 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/timeLabel"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/def_txt_color"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/iconImageView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -119,16 +115,14 @@
                 android:gravity="center_horizontal"
 
                 android:text="PRECIPITATION CHANCE"
-
-                android:textColor="#80FFFFFF" />
+ />
 
             <TextView
                 android:id="@+id/precipValue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="--"
-                android:textColor="#FFFFFF" />
+                android:text="--" />
         </LinearLayout>
 
         <LinearLayout
@@ -142,16 +136,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="HUMIDITY"
-                android:textColor="#80FFFFFF" />
+                android:text="HUMIDITY" />
 
             <TextView
                 android:id="@+id/humidityValue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="--"
-                android:textColor="#FFFFFF" />
+                android:text="--" />
         </LinearLayout>
     </LinearLayout>
 
@@ -163,7 +155,6 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:text=""
-        android:textColor="@color/def_txt_color"
         android:textSize="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -178,7 +169,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="Powered by Dark Sky"
-        android:textColor="@color/def_txt_color"
         android:textSize="8sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

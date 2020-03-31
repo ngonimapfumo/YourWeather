@@ -1,8 +1,10 @@
 package ngonim.xyz.yourweather.ui;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -19,13 +21,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONException;
@@ -36,7 +42,6 @@ import java.io.IOException;
 import ngonim.xyz.yourweather.R;
 import ngonim.xyz.yourweather.models.Current;
 import ngonim.xyz.yourweather.models.Forecast;
-import ngonim.xyz.yourweather.models.Ut;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -72,7 +77,12 @@ public class MainActivity extends AppCompatActivity {
         mIconView = findViewById(R.id.iconImageView);
         mSummary = findViewById(R.id.summaryText);
         mLocationText = findViewById(R.id.locationText);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
+            checkPermission();
+        }
         getForecast();
+
     }
 
     @Override
@@ -80,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -92,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (itemId == R.id.add_city) {
             //todo: add activity for city picker
-            showAlert("ALERT","Currently under development", "OK","");
+            showAlert("ALERT", "Currently under development", "OK", "");
         }
 
         return super.onOptionsItemSelected(item);
@@ -125,6 +136,17 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    public void checkPermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ){//Can add more as per requirement
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    123);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -136,61 +158,76 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+
     private void getForecast() {
 
-        mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                final String forecast = "https://api.darksky.net/forecast/" + APIKEY +
-                        "/" + location.getLatitude() + "," + location.getLongitude();
-                Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
-                if (isNetworkAvailable()) {
-                    OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder()
-                            .url(forecast)
-                            .build();
 
-                    Call call = client.newCall(request);
-                    call.enqueue(new Callback() {
-                        @Override
-                        public void onFailure
-                                (Call call, IOException e) {
-                            Log.d(TAG, e.getMessage());
-                        }
+            mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
 
-                        @Override
-                        public void onResponse
-                                (Call call, Response response) {
+                    //todo: edge case to be fixed
+                    if(location==null){
+                        return;
+                    }
+                    
+                    final String forecast = "https://api.darksky.net/forecast/" + APIKEY +
+                            "/" + location.getLatitude() + "," + location.getLongitude();
+                    Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
+                    if (isNetworkAvailable()) {
+                        OkHttpClient client = new OkHttpClient();
+                        Request request = new Request.Builder()
+                                .url(forecast)
+                                .build();
 
-                            try {
-                                final String jsonData = response.body().string();
-                                Log.v(TAG, jsonData);
-
-                                if (response.isSuccessful()) {
-                                    mForecast = parseForecastDetails(jsonData);
-                                    runOnUiThread(new Runnable() {
-                                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                                        @Override
-                                        public void run() {
-                                            updateDisplay();
-                                        }
-                                    });
-                                } else {
-                                    showAlert("ALERT","oops, something went wrong",
-                                            "OK","");
-                                }
-
-                            } catch (IOException | JSONException e) {
-                                Log.e(TAG, "Exception caught", e);
+                        Call call = client.newCall(request);
+                        call.enqueue(new Callback() {
+                            @Override
+                            public void onFailure
+                                    (Call call, IOException e) {
+                                Log.d(TAG, e.getMessage());
                             }
-                        }
-                    });
+
+                            @Override
+                            public void onResponse
+                                    (Call call, Response response) {
+
+                                try {
+                                    final String jsonData = response.body().string();
+                                    Log.v(TAG, jsonData);
+
+                                    if (response.isSuccessful()) {
+                                        mForecast = parseForecastDetails(jsonData);
+                                        runOnUiThread(new Runnable() {
+                                            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                                            @Override
+                                            public void run() {
+                                                updateDisplay();
+                                            }
+                                        });
+                                    } else {
+                                        showAlert("ALERT", "oops, something went wrong",
+                                                "OK", "");
+                                    }
+
+                                } catch (IOException | JSONException e) {
+                                    Log.e(TAG, "Exception caught", e);
+                                }
+                            }
+                        });
+
+                    }
+
 
                 }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(MainActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
 
-
-            }
-        });
 
     }
 
