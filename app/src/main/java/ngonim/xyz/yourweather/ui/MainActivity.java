@@ -17,7 +17,9 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,7 +66,9 @@ public class MainActivity extends AppCompatActivity {
     LocationManager mLocationManager;
 
     private boolean doubleBackToExitPressedOnce = false;
+    private ProgressBar mProgressBar;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         mIconView = findViewById(R.id.iconImageView);
         mSummary = findViewById(R.id.summaryText);
         mLocationText = findViewById(R.id.locationText);
+        mProgressBar = findViewById(R.id.progBar);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermission();
@@ -159,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void getForecast() {
-
+        mProgressBar.setVisibility(View.VISIBLE);
 
         mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
@@ -196,11 +201,13 @@ public class MainActivity extends AppCompatActivity {
                                 Log.v(TAG, jsonData);
 
                                 if (response.isSuccessful()) {
+
                                     mForecast = parseForecastDetails(jsonData);
                                     runOnUiThread(new Runnable() {
                                         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                                         @Override
                                         public void run() {
+                                            mProgressBar.setVisibility(View.GONE);
                                             updateDisplay();
                                         }
                                     });
@@ -222,7 +229,9 @@ public class MainActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+                showAlert("Fail", "App failed to start, please reload",
+                        "OKAY", "");
             }
         });
 
@@ -258,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
         Drawable drawable = getResources().getDrawable(current.getIconId(), null);
         mIconView.setImageDrawable(drawable);
         mTime.setText(current.getFormattedTime());
-        mLocationText.setText(current.getTimeZone());
+        mLocationText.setText(current.getTimeZone().replace("/", ", "));
     }
 
     private Current getCurrentDetails(String jsonData) throws JSONException {
