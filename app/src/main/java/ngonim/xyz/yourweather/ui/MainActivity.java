@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         mTime = findViewById(R.id.timeLabel);
         mTemperature = findViewById(R.id.temperatureLabel);
@@ -83,11 +85,12 @@ public class MainActivity extends AppCompatActivity {
         mLocationText = findViewById(R.id.locationText);
         mProgressBar = findViewById(R.id.progBar);
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermission();
         }
+        checkGPS();
         getForecast();
+
 
     }
 
@@ -97,6 +100,14 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
+    private void checkGPS() {
+        if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            GPSAlert("Enable Location",
+                    "Your Locations Settings is set to Off \n Please Enable Location to use this app",
+                    "Go to settings");
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -116,6 +127,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void showAlert(String alert, String currently_under_development, String ok, String s) {
+
+    }
+
     private Forecast parseForecastDetails(String jsonData) throws JSONException {
         Forecast mForecast1 = new Forecast();
         mForecast1.setCurrent(getCurrentDetails(jsonData));
@@ -123,21 +138,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void showAlert(String title, String message, String positiveMessageButtonText, String negativeMessageButtonText) {
+    private void GPSAlert(String title, String message, String positiveMessageButtonText) {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle(title)
+                .setCancelable(false)
                 .setMessage(message)
                 .setPositiveButton(positiveMessageButtonText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                         Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivityForResult(myIntent, 1);
-                    }
-                })
-                .setNegativeButton(negativeMessageButtonText, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
                     }
                 });
         dialog.show();
@@ -158,8 +168,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                showAlert("Enable Location", "\"Your Locations Settings is set to 'Off'.\\nPlease Enable Location to \" +\n" +
-                        "                        \"use this app\"", "Location Settings", "OK");
+                getForecast();
+               checkGPS();
+
             }
         }
     }
@@ -167,14 +178,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void getForecast() {
         mProgressBar.setVisibility(View.VISIBLE);
-
         mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
 
                 //todo: edge case to be fixed
                 if (location == null) {
-                    return;
+
                 }
 
                 final String forecast = "https://api.darksky.net/forecast/" + APIKEY +
