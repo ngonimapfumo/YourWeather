@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 getForecast();
-               checkGPS();
+                checkGPS();
 
             }
         }
@@ -184,58 +184,59 @@ public class MainActivity extends AppCompatActivity {
 
                 //todo: edge case to be fixed
                 if (location == null) {
-
+                    return;
                 }
 
-                final String forecast = "https://api.darksky.net/forecast/" + APIKEY +
-                        "/" + location.getLatitude() + "," + location.getLongitude();
-                Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
-                if (isNetworkAvailable()) {
-                    OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder()
-                            .url(forecast)
-                            .build();
 
-                    Call call = client.newCall(request);
-                    call.enqueue(new Callback() {
-                        @Override
-                        public void onFailure
-                                (Call call, IOException e) {
-                            Log.d(TAG, e.getMessage());
-                        }
+                    final String forecast = "https://api.darksky.net/forecast/" + APIKEY +
+                            "/" + location.getLatitude() + "," + location.getLongitude();
+                    Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
+                    if (isNetworkAvailable()) {
+                        OkHttpClient client = new OkHttpClient();
+                        Request request = new Request.Builder()
+                                .url(forecast)
+                                .build();
 
-                        @Override
-                        public void onResponse
-                                (Call call, Response response) {
-
-                            try {
-                                final String jsonData = response.body().string();
-                                Log.v(TAG, jsonData);
-
-                                if (response.isSuccessful()) {
-
-                                    mForecast = parseForecastDetails(jsonData);
-                                    runOnUiThread(new Runnable() {
-                                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                                        @Override
-                                        public void run() {
-                                            mProgressBar.setVisibility(View.GONE);
-                                            updateDisplay();
-                                        }
-                                    });
-                                } else {
-                                    showAlert("ALERT", "oops, something went wrong",
-                                            "OK", "");
-                                }
-
-                            } catch (IOException | JSONException e) {
-                                Log.e(TAG, "Exception caught", e);
+                        Call call = client.newCall(request);
+                        call.enqueue(new Callback() {
+                            @Override
+                            public void onFailure
+                                    (Call call, IOException e) {
+                                Log.d(TAG, e.getMessage());
                             }
-                        }
-                    });
+
+                            @Override
+                            public void onResponse
+                                    (Call call, Response response) {
+
+                                try {
+                                    final String jsonData = response.body().string();
+                                    Log.v(TAG, jsonData);
+
+                                    if (response.isSuccessful()) {
+
+                                        mForecast = parseForecastDetails(jsonData);
+                                        runOnUiThread(new Runnable() {
+                                            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                                            @Override
+                                            public void run() {
+                                                mProgressBar.setVisibility(View.GONE);
+                                                updateDisplay();
+                                            }
+                                        });
+                                    } else {
+                                        showAlert("ALERT", "oops, something went wrong",
+                                                "OK", "");
+                                    }
+
+                                } catch (IOException | JSONException e) {
+                                    Log.e(TAG, "Exception caught", e);
+                                }
+                            }
+                        });
+
 
                 }
-
 
             }
         }).addOnFailureListener(new OnFailureListener() {
