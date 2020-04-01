@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void GPSAlert(String title, String message, String positiveMessageButtonText) {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setTitle(title)
                 .setCancelable(false)
                 .setMessage(message)
@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
         return isAvailabe;
     }
 
-    private Context actContext() {
+    private Context getActivity() {
         return MainActivity.this;
     }
 

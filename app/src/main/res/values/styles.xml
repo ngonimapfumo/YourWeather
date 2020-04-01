@@ -3,12 +3,14 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/light_txt</item>
+        <item name="colorPrimaryDark">@color/light_txt</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:fontFamily">@font/quicksand</item>
-
+        <item name="alertDialogTheme">@style/MyAlertDialogTheme</item>
     </style>
+
+
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

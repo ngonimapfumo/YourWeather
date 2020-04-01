@@ -2,9 +2,9 @@
 <resources>
     <color name="colorPrimary">#283e51</color>
     <color name="colorPrimaryDark">#283e51</color> <!--thetop-->
-    <color name="colorAccent">#000</color>
+    <color name="colorAccent">#000000</color>
     <color name="def_txt_color">#90FFFFFF</color>
-    <color name="dark_txt">#000</color>
-    <color name="light_txt">#FFF</color>
+    <color name="dark_txt">#000000</color>
+    <color name="light_txt">#FFFFFF</color>
 
 </resources>
