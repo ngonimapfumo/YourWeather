@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showAlert(String alert, String currently_under_development, String ok, String s) {
 
+        //todo: do magic
     }
 
     private Forecast parseForecastDetails(String jsonData) throws JSONException {
