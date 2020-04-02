@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     private void checkGPS() {
         if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             GPSAlert("Enable Location",
-                    "Your Locations Settings is set to Off \n Please Enable Location to use this app",
+                    "Your Locations Settings is set to off \n Please Enable Location to use this app",
                     "Go to settings");
         }
     }
@@ -122,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (itemId == R.id.add_city) {
             //todo: add activity for city picker
-            //
             showAlert("ALERT", "Currently under development", "OK", "");
         }
 
@@ -130,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showAlert(String alert, String currently_under_development, String ok, String s) {
-
         //todo: do magic
     }
 
