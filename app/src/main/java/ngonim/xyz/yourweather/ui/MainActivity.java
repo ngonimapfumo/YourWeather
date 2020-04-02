@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String APIKEY = "0b7621a8ed42749a4d70136dab97e9f9";
+
     private Forecast mForecast;
     private TextView mTime;
     private TextView mTemperature;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLocationText;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     LocationManager mLocationManager;
+    private final String API_KEY = "7337147a8504643a7cab939e6c7b6d18";
 
     private boolean doubleBackToExitPressedOnce = false;
     private ProgressBar mProgressBar;
@@ -178,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void getForecast() {
+       // String mm = "api.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=7337147a8504643a7cab939e6c7b6d18";
         mProgressBar.setVisibility(View.VISIBLE);
         mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
@@ -188,9 +191,9 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+                String forecast = "https://api.openweathermap.org/data/2.5/weather?"+"lat="+location.getLatitude()+"&lon="+location.getLongitude()
+                        +"&appid="+API_KEY;
 
-                    final String forecast = "https://api.darksky.net/forecast/" + APIKEY +
-                            "/" + location.getLatitude() + "," + location.getLongitude();
                     Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
                     if (isNetworkAvailable()) {
                         OkHttpClient client = new OkHttpClient();
@@ -208,29 +211,40 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void onResponse
-                                    (Call call, Response response) {
+                                    (Call call, final Response response) {
 
                                 try {
                                     final String jsonData = response.body().string();
                                     Log.v(TAG, jsonData);
 
                                     if (response.isSuccessful()) {
+                                        System.out.println("jData"+jsonData);
 
-                                        mForecast = parseForecastDetails(jsonData);
+                                        /*{"coord":{"lon":30.92,"lat":-17.91},
+                                        "weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03d"}],
+                                        "base":"stations","main":{"temp":298.15,"feels_like":295.52,"temp_min":298.15,"temp_max":298.15,"pressure":1022,
+                                        "humidity":44},"visibility":10000,"wind":{"speed":4.6,"deg":160},"clouds":{"all":30},"dt":1585841416,"sys"
+                                        :{"type":1,"id":9723,"country":"ZW","sunrise":1585800162,"sunset":1585842994},"timezone":7200,"id":1106398,
+                                        "name":"Mbare","cod":200}*/
+
+
+
+                                        /*mForecast = parseForecastDetails(jsonData);
                                         runOnUiThread(new Runnable() {
                                             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                                             @Override
                                             public void run() {
                                                 mProgressBar.setVisibility(View.GONE);
-                                                updateDisplay();
+                                               // updateDisplay();
+                                                Toast.makeText(MainActivity.this, jsonData, Toast.LENGTH_SHORT).show();
                                             }
-                                        });
+                                        });*/
                                     } else {
                                         showAlert("ALERT", "oops, something went wrong",
                                                 "OK", "");
                                     }
 
-                                } catch (IOException | JSONException e) {
+                                } catch (IOException e) {
                                     Log.e(TAG, "Exception caught", e);
                                 }
                             }
