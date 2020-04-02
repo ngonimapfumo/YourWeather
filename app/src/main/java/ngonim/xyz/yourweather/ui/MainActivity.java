@@ -180,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void getForecast() {
-       // String mm = "api.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=7337147a8504643a7cab939e6c7b6d18";
         mProgressBar.setVisibility(View.VISIBLE);
         mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
