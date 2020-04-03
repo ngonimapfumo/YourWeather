@@ -14,6 +14,11 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
+
+    def localProperties = new Properties()
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
+
     buildTypes {
         release {
             minifyEnabled false
@@ -21,10 +26,11 @@ android {
         }
 
         debug {
-
+            buildConfigField "String", "API_KEY", localProperties['apiKey']
         }
     }
 }
+
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'

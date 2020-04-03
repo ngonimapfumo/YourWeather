@@ -45,6 +45,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 
+import ngonim.xyz.yourweather.BuildConfig;
 import ngonim.xyz.yourweather.R;
 import ngonim.xyz.yourweather.models.Current;
 import ngonim.xyz.yourweather.models.Forecast;
@@ -57,8 +58,6 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String APIKEY = "0b7621a8ed42749a4d70136dab97e9f9";
-
     private Forecast mForecast;
     private TextView mTime;
     private TextView mTemperature;
@@ -70,10 +69,6 @@ public class MainActivity extends AppCompatActivity {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     LocationManager mLocationManager;
     private FirebaseRemoteConfig mFirebaseConfig;
-    private final String API_KEY = "7337147a8504643a7cab939e6c7b6d18";
-
-
-
     private boolean doubleBackToExitPressedOnce = false;
     private ProgressBar mProgressBar;
 
@@ -185,28 +180,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void getForecast() {
-
-        /*HashMap map = new HashMap<>();
-        map.put("API_KEY", "MMM");
-        *//*map.put("test_param","bb");*//*
-        mFirebaseConfig.setDefaultsAsync(map);
-        mFirebaseConfig.fetch().addOnCompleteListener(this, new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    mFirebaseConfig.activate();
-                } else {
-                    Toast.makeText(MainActivity.this.getActivity(), "Fetch Failed",
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        String fetch = mFirebaseConfig.getString("API_KEY");
-        System.out.println("yoyo"+fetch);
-        Toast.makeText(this, fetch, Toast.LENGTH_LONG).show();*/
-
-
         mProgressBar.setVisibility(View.VISIBLE);
         mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
@@ -218,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 String forecast = "https://api.openweathermap.org/data/2.5/weather?" + "lat=" + location.getLatitude() + "&lon=" + location.getLongitude()
-                        + "&appid=" + API_KEY;
+                        + "&appid=" + BuildConfig.API_KEY;
 
                 Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
                 if (isNetworkAvailable()) {
