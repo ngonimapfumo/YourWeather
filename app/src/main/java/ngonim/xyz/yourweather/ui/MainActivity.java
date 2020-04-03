@@ -186,9 +186,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void getForecast() {
 
-        HashMap map = new HashMap<>();
+        /*HashMap map = new HashMap<>();
         map.put("API_KEY", "MMM");
-        /*map.put("test_param","bb");*/
+        *//*map.put("test_param","bb");*//*
         mFirebaseConfig.setDefaultsAsync(map);
         mFirebaseConfig.fetch().addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
         String fetch = mFirebaseConfig.getString("API_KEY");
         System.out.println("yoyo"+fetch);
-        Toast.makeText(this, fetch, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, fetch, Toast.LENGTH_LONG).show();*/
 
 
         mProgressBar.setVisibility(View.VISIBLE);
