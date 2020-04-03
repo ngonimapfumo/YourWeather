@@ -33,13 +33,17 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import ngonim.xyz.yourweather.R;
 import ngonim.xyz.yourweather.models.Current;
@@ -65,7 +69,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLocationText;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     LocationManager mLocationManager;
+    private FirebaseRemoteConfig mFirebaseConfig;
     private final String API_KEY = "7337147a8504643a7cab939e6c7b6d18";
+
+
 
     private boolean doubleBackToExitPressedOnce = false;
     private ProgressBar mProgressBar;
@@ -75,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mFirebaseConfig = FirebaseRemoteConfig.getInstance();
         mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         mTime = findViewById(R.id.timeLabel);
@@ -178,6 +185,28 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void getForecast() {
+
+        HashMap map = new HashMap<>();
+        map.put("API_KEY", "MMM");
+        /*map.put("test_param","bb");*/
+        mFirebaseConfig.setDefaultsAsync(map);
+        mFirebaseConfig.fetch().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    mFirebaseConfig.activate();
+                } else {
+                    Toast.makeText(MainActivity.this.getActivity(), "Fetch Failed",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        String fetch = mFirebaseConfig.getString("API_KEY");
+        System.out.println("yoyo"+fetch);
+        Toast.makeText(this, fetch, Toast.LENGTH_LONG).show();
+
+
         mProgressBar.setVisibility(View.VISIBLE);
         mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
@@ -188,34 +217,34 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                String forecast = "https://api.openweathermap.org/data/2.5/weather?"+"lat="+location.getLatitude()+"&lon="+location.getLongitude()
-                        +"&appid="+API_KEY;
+                String forecast = "https://api.openweathermap.org/data/2.5/weather?" + "lat=" + location.getLatitude() + "&lon=" + location.getLongitude()
+                        + "&appid=" + API_KEY;
 
-                    Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
-                    if (isNetworkAvailable()) {
-                        OkHttpClient client = new OkHttpClient();
-                        Request request = new Request.Builder()
-                                .url(forecast)
-                                .build();
+                Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
+                if (isNetworkAvailable()) {
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            .url(forecast)
+                            .build();
 
-                        Call call = client.newCall(request);
-                        call.enqueue(new Callback() {
-                            @Override
-                            public void onFailure
-                                    (Call call, IOException e) {
-                                Log.d(TAG, e.getMessage());
-                            }
+                    Call call = client.newCall(request);
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure
+                                (Call call, IOException e) {
+                            Log.d(TAG, e.getMessage());
+                        }
 
-                            @Override
-                            public void onResponse
-                                    (Call call, final Response response) {
+                        @Override
+                        public void onResponse
+                                (Call call, final Response response) {
 
-                                try {
-                                    final String jsonData = response.body().string();
-                                    Log.v(TAG, jsonData);
+                            try {
+                                final String jsonData = response.body().string();
+                                Log.v(TAG, jsonData);
 
-                                    if (response.isSuccessful()) {
-                                        System.out.println("jData"+jsonData);
+                                if (response.isSuccessful()) {
+                                    System.out.println("jData" + jsonData);
 
                                         /*{"coord":{"lon":30.92,"lat":-17.91},
                                         "weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03d"}],
@@ -236,16 +265,16 @@ public class MainActivity extends AppCompatActivity {
                                                 Toast.makeText(MainActivity.this, jsonData, Toast.LENGTH_SHORT).show();
                                             }
                                         });*/
-                                    } else {
-                                        showAlert("ALERT", "oops, something went wrong",
-                                                "OK", "");
-                                    }
-
-                                } catch (IOException e) {
-                                    Log.e(TAG, "Exception caught", e);
+                                } else {
+                                    showAlert("ALERT", "oops, something went wrong",
+                                            "OK", "");
                                 }
+
+                            } catch (IOException e) {
+                                Log.e(TAG, "Exception caught", e);
                             }
-                        });
+                        }
+                    });
 
 
                 }
