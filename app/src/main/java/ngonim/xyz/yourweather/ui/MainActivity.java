@@ -33,17 +33,14 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import ngonim.xyz.yourweather.BuildConfig;
 import ngonim.xyz.yourweather.R;
@@ -190,14 +187,16 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+
                 String forecast = "https://api.openweathermap.org/data/2.5/weather?" + "lat=" + location.getLatitude() + "&lon=" + location.getLongitude()
                         + "&appid=" + BuildConfig.API_KEY;
+
 
                 Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
                 if (isNetworkAvailable()) {
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
-                            .url(forecast)
+                            .url("forecast")
                             .build();
 
                     Call call = client.newCall(request);
