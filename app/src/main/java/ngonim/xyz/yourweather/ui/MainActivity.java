@@ -225,8 +225,6 @@ public class MainActivity extends AppCompatActivity {
                                         :{"type":1,"id":9723,"country":"ZW","sunrise":1585800162,"sunset":1585842994},"timezone":7200,"id":1106398,
                                         "name":"Mbare","cod":200}*/
 
-
-
                                         /*mForecast = parseForecastDetails(jsonData);
                                         runOnUiThread(new Runnable() {
                                             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
