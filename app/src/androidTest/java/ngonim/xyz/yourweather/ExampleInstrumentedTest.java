@@ -1,8 +1,10 @@
 package ngonim.xyz.yourweather;
 
+
+
 import android.content.Context;
 
-import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
@@ -20,8 +22,8 @@ public class ExampleInstrumentedTest {
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.
-    //    Context appContext = InstrumentationRegistry.getTargetContext();
+        Context appContext = InstrumentationRegistry.getTargetContext();
 
-      //  assertEquals("ngonim.xyz.yourweather", appContext.getPackageName());
+        assertEquals("ngonim.xyz.yourweather", appContext.getPackageName());
     }
 }
