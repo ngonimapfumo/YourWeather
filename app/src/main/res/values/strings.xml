@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Your Weather</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+
+    <!-- Example settings for Data & Sync -->
+
+    <!-- Example settings for Notifications -->
+
+    <string name="NO_DATA_CONN">no data connection</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="press_back_to_exit">Please click BACK again to exit</string>
+</resources>
