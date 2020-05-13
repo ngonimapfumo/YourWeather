@@ -182,10 +182,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Location location) {
 
-                //todo: edge case to be fixed
+               /* //todo: edge case to be fixed
                 if (location == null) {
                     return;
-                }
+                }*/
 
 
                 String forecast = "https://api.openweathermap.org/data/2.5/weather?" + "lat=" + location.getLatitude() + "&lon=" + location.getLongitude()
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                 if (isNetworkAvailable()) {
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
-                            .url("forecast")
+                            .url(forecast)
                             .build();
 
                     Call call = client.newCall(request);
@@ -217,6 +217,8 @@ public class MainActivity extends AppCompatActivity {
 
                                 if (response.isSuccessful()) {
                                     System.out.println("jData" + jsonData);
+                                    JSONObject jsonObject = new JSONObject(jsonData);
+
 
                                         /*{"coord":{"lon":30.92,"lat":-17.91},
                                         "weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03d"}],
@@ -242,6 +244,8 @@ public class MainActivity extends AppCompatActivity {
 
                             } catch (IOException e) {
                                 Log.e(TAG, "Exception caught", e);
+                            } catch (JSONException e) {
+
                             }
                         }
                     });
