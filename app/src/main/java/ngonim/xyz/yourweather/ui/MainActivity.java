@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -37,6 +36,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -217,9 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 if (response.isSuccessful()) {
                                     System.out.println("jData" + jsonData);
-                                    JSONObject jsonObject = new JSONObject(jsonData);
-
-
+                                    final JSONObject jsonObject = new JSONObject(jsonData);
                                         /*{"coord":{"lon":30.92,"lat":-17.91},
                                         "weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03d"}],
                                         "base":"stations","main":{"temp":298.15,"feels_like":295.52,"temp_min":298.15,"temp_max":298.15,"pressure":1022,
@@ -227,16 +225,20 @@ public class MainActivity extends AppCompatActivity {
                                         :{"type":1,"id":9723,"country":"ZW","sunrise":1585800162,"sunset":1585842994},"timezone":7200,"id":1106398,
                                         "name":"Mbare","cod":200}*/
 
-                                        /*mForecast = parseForecastDetails(jsonData);
-                                        runOnUiThread(new Runnable() {
-                                            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                                            @Override
-                                            public void run() {
-                                                mProgressBar.setVisibility(View.GONE);
-                                               // updateDisplay();
-                                                Toast.makeText(MainActivity.this, jsonData, Toast.LENGTH_SHORT).show();
+                                    runOnUiThread(new Runnable() {
+                                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                                        @Override
+                                        public void run() {
+                                            mProgressBar.setVisibility(View.GONE);
+                                            try {
+                                                updateDisplay(jsonObject);
+                                                //  Toast.makeText(MainActivity.this, jsonData, Toast.LENGTH_SHORT).show();
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
                                             }
-                                        });*/
+
+                                        }
+                                    });
                                 } else {
                                     showAlert("ALERT", "oops, something went wrong",
                                             "OK", "");
@@ -286,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void updateDisplay() {
+    /*private void updateDisplay() {
         Current current = mForecast.getCurrent();
         mTemperature.setText(current.getTemperatureInCelcius() + "");
         mPrecipitation.setText(current.getPrecipitation() + "%");
@@ -296,6 +298,20 @@ public class MainActivity extends AppCompatActivity {
         mIconView.setImageDrawable(drawable);
         mTime.setText(current.getFormattedTime());
         mLocationText.setText(current.getTimeZone().replace("/", ", "));
+    }*/
+
+    private void updateDisplay(JSONObject jsonObject) throws JSONException {
+        JSONArray weatherObj = jsonObject.getJSONArray("weather");
+        JSONObject main = jsonObject.getJSONObject("main");
+        for (int i = 0; i < weatherObj.length(); i++) {
+            JSONObject obj_temp = getJsonObject(weatherObj, i);
+            mSummary.setText("" + obj_temp.get("description"));
+        }
+
+        mTemperature.setText("" + main.get("temp"));
+        mLocationText.setText("" + jsonObject.get("name"));
+
+
     }
 
     private Current getCurrentDetails(String jsonData) throws JSONException {
@@ -322,6 +338,20 @@ public class MainActivity extends AppCompatActivity {
             isAvailabe = true;
         }
         return isAvailabe;
+    }
+
+    private JSONObject getJsonObject(JSONArray arr, int position) {
+        try {
+            JSONObject obj_temp = arr.getJSONObject(position);
+
+            return obj_temp;
+
+        } catch (JSONException e) {
+//            e.printStackTrace();
+
+            return null;
+        }
+
     }
 
     private Context getActivity() {
