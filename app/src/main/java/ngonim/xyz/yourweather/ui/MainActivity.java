@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 String forecast = "https://api.openweathermap.org/data/2.5/weather?" + "lat=" + location.getLatitude() + "&lon=" + location.getLongitude()
-                        + "&appid=" + BuildConfig.API_KEY;
+                        + "&appid=" + BuildConfig.API_KEY+"&units=metric";
 
 
                 Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
@@ -232,7 +232,6 @@ public class MainActivity extends AppCompatActivity {
                                             mProgressBar.setVisibility(View.GONE);
                                             try {
                                                 updateDisplay(jsonObject);
-                                                //  Toast.makeText(MainActivity.this, jsonData, Toast.LENGTH_SHORT).show();
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
                                             }
