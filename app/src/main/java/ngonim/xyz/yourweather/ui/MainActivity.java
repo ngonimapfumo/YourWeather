@@ -177,19 +177,21 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void getForecast() {
+
         mProgressBar.setVisibility(View.VISIBLE);
         mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-
-               /* //todo: edge case to be fixed
                 if (location == null) {
+                    Toast.makeText(MainActivity.this, "loc is null", Toast.LENGTH_SHORT).show();
                     return;
-                }*/
+                }
 
+                double lat = location.getLatitude();
+                double lon = location.getLongitude();
 
-                String forecast = "https://api.openweathermap.org/data/2.5/weather?" + "lat=" + location.getLatitude() + "&lon=" + location.getLongitude()
-                        + "&appid=" + BuildConfig.API_KEY+"&units=metric";
+                String forecast = "https://api.openweathermap.org/data/2.5/weather?" + "lat=" + lon + "&lon=" + lat
+                        + "&appid=" + BuildConfig.API_KEY + "&units=metric";
 
 
                 Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
@@ -306,7 +308,6 @@ public class MainActivity extends AppCompatActivity {
             JSONObject obj_temp = getJsonObject(weatherObj, i);
             mSummary.setText("" + obj_temp.get("description"));
         }
-
         mTemperature.setText("" + main.get("temp"));
         mLocationText.setText("" + jsonObject.get("name"));
 
