@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -22,7 +23,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -30,10 +30,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import org.json.JSONArray;
@@ -41,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 import ngonim.xyz.yourweather.BuildConfig;
 import ngonim.xyz.yourweather.R;
@@ -52,7 +49,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private Forecast mForecast;
@@ -63,11 +60,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView mSummary;
     private ImageView mIconView;
     private TextView mLocationText;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    LocationManager mLocationManager;
+    private Location mLocation;
+    private LocationManager mLocationManager;
     private FirebaseRemoteConfig mFirebaseConfig;
     private boolean doubleBackToExitPressedOnce = false;
     private ProgressBar mProgressBar;
+    double lat;
+    double lon;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -76,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mFirebaseConfig = FirebaseRemoteConfig.getInstance();
         mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         mTime = findViewById(R.id.timeLabel);
         mTemperature = findViewById(R.id.temperatureLabel);
         mHumidity = findViewById(R.id.humidityValue);
@@ -86,13 +84,10 @@ public class MainActivity extends AppCompatActivity {
         mLocationText = findViewById(R.id.locationText);
         mProgressBar = findViewById(R.id.progBar);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkPermission();
-        }
-        checkGPS();
+        checkPermission();
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 1, this);
         getForecast();
-
-
+        checkGPS();
     }
 
     @Override
@@ -128,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showAlert(String alert, String currently_under_development, String ok, String s) {
-        //todo: do magic
+        //todo: do things
     }
 
     private Forecast parseForecastDetails(String jsonData) throws JSONException {
@@ -176,50 +171,66 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "onLocationChanged: " + lat + lon);
+        lat = location.getLatitude();
+        lon = location.getLongitude();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+
     private void getForecast() {
 
         mProgressBar.setVisibility(View.VISIBLE);
-        mFusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location == null) {
-                    Toast.makeText(MainActivity.this, "loc is null", Toast.LENGTH_SHORT).show();
-                    return;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+
+
+        String forecast = "https://api.openweathermap.org/data/2.5/weather?" + "lat=" + lat + "&lon=" + lon
+                + "&appid=" + BuildConfig.API_KEY + "&units=metric";
+
+        if (isNetworkAvailable()) {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url(forecast)
+                    .build();
+
+            Call call = client.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure
+                        (Call call, IOException e) {
+                    Log.d(TAG, e.getMessage());
                 }
 
-                double lat = location.getLatitude();
-                double lon = location.getLongitude();
+                @Override
+                public void onResponse
+                        (Call call, final Response response) {
 
-                String forecast = "https://api.openweathermap.org/data/2.5/weather?" + "lat=" + lon + "&lon=" + lat
-                        + "&appid=" + BuildConfig.API_KEY + "&units=metric";
+                    try {
+                        final String jsonData = response.body().string();
+                        Log.v(TAG, jsonData);
 
-
-                Log.d("Coordinates", location.getLatitude() + location.getLongitude() + "");
-                if (isNetworkAvailable()) {
-                    OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder()
-                            .url(forecast)
-                            .build();
-
-                    Call call = client.newCall(request);
-                    call.enqueue(new Callback() {
-                        @Override
-                        public void onFailure
-                                (Call call, IOException e) {
-                            Log.d(TAG, e.getMessage());
-                        }
-
-                        @Override
-                        public void onResponse
-                                (Call call, final Response response) {
-
-                            try {
-                                final String jsonData = response.body().string();
-                                Log.v(TAG, jsonData);
-
-                                if (response.isSuccessful()) {
-                                    System.out.println("jData" + jsonData);
-                                    final JSONObject jsonObject = new JSONObject(jsonData);
+                        if (response.isSuccessful()) {
+                            System.out.println("jData" + jsonData);
+                            final JSONObject jsonObject = new JSONObject(jsonData);
                                         /*{"coord":{"lon":30.92,"lat":-17.91},
                                         "weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03d"}],
                                         "base":"stations","main":{"temp":298.15,"feels_like":295.52,"temp_min":298.15,"temp_max":298.15,"pressure":1022,
@@ -227,46 +238,34 @@ public class MainActivity extends AppCompatActivity {
                                         :{"type":1,"id":9723,"country":"ZW","sunrise":1585800162,"sunset":1585842994},"timezone":7200,"id":1106398,
                                         "name":"Mbare","cod":200}*/
 
-                                    runOnUiThread(new Runnable() {
-                                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                                        @Override
-                                        public void run() {
-                                            mProgressBar.setVisibility(View.GONE);
-                                            try {
-                                                updateDisplay(jsonObject);
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
+                            runOnUiThread(new Runnable() {
+                                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                                @Override
+                                public void run() {
+                                    mProgressBar.setVisibility(View.GONE);
+                                    try {
+                                        updateDisplay(jsonObject);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
 
-                                        }
-                                    });
-                                } else {
-                                    showAlert("ALERT", "oops, something went wrong",
-                                            "OK", "");
                                 }
-
-                            } catch (IOException e) {
-                                Log.e(TAG, "Exception caught", e);
-                            } catch (JSONException e) {
-
-                            }
+                            });
+                        } else {
+                            showAlert("ALERT", "oops, something went wrong",
+                                    "OK", "");
                         }
-                    });
 
+                    } catch (IOException e) {
+                        Log.e(TAG, "Exception caught", e);
+                    } catch (JSONException e) {
 
+                    }
                 }
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                e.printStackTrace();
-                showAlert("Fail", "App failed to start, please reload",
-                        "OKAY", "");
-            }
-        });
+            });
 
 
+        }
     }
 
 
@@ -289,26 +288,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    /*private void updateDisplay() {
-        Current current = mForecast.getCurrent();
-        mTemperature.setText(current.getTemperatureInCelcius() + "");
-        mPrecipitation.setText(current.getPrecipitation() + "%");
-        mHumidity.setText(current.getHumidity() + "%");
-        mSummary.setText(current.getSummary() + "");
-        Drawable drawable = getResources().getDrawable(current.getIconId(), null);
-        mIconView.setImageDrawable(drawable);
-        mTime.setText(current.getFormattedTime());
-        mLocationText.setText(current.getTimeZone().replace("/", ", "));
-    }*/
-
     private void updateDisplay(JSONObject jsonObject) throws JSONException {
+        DecimalFormat decimalFormat = new DecimalFormat("0");
         JSONArray weatherObj = jsonObject.getJSONArray("weather");
         JSONObject main = jsonObject.getJSONObject("main");
         for (int i = 0; i < weatherObj.length(); i++) {
             JSONObject obj_temp = getJsonObject(weatherObj, i);
             mSummary.setText("" + obj_temp.get("description"));
         }
-        mTemperature.setText("" + main.get("temp"));
+        mTemperature.setText(decimalFormat.format(main.get("temp")));
         mLocationText.setText("" + jsonObject.get("name"));
 
 
