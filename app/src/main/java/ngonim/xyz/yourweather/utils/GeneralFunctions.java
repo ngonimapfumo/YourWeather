@@ -27,16 +27,7 @@ public class GeneralFunctions extends AppCompatActivity {
     }
 
 
-    public boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        boolean isAvailabe = false;
-        if (networkInfo != null && networkInfo.isConnected()) {
-            isAvailabe = true;
-        }
-        return isAvailabe;
-    }
+
 
 
 }

@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -112,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.menu_refresh) {
-            if (!mGeneralFunctions.isNetworkAvailable()) {
+            if (!isNetworkAvailable()) {
                 Toast.makeText(this, getString(R.string.NO_DATA_CONN), Toast.LENGTH_SHORT).show();
             } else {
                 getForecast();
@@ -134,6 +136,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         mForecast1.setCurrent(getCurrentDetails(jsonData));
         return mForecast1;
 
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean isAvailabe = false;
+        if (networkInfo != null && networkInfo.isConnected()) {
+            isAvailabe = true;
+        }
+        return isAvailabe;
     }
 
     private void GPSAlert(String title, String message, String positiveMessageButtonText) {
@@ -208,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         String url = BASE_URL + "lat=" + lat + "&lon=" + lon
                 + "&appid=" + BuildConfig.API_KEY + "&units=metric";
 
-        if (mGeneralFunctions.isNetworkAvailable()) {
+        if (isNetworkAvailable()) {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     .url(url)
