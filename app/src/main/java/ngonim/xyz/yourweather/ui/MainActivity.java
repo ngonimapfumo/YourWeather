@@ -8,8 +8,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,11 +41,14 @@ import ngonim.xyz.yourweather.BuildConfig;
 import ngonim.xyz.yourweather.R;
 import ngonim.xyz.yourweather.models.Current;
 import ngonim.xyz.yourweather.models.Forecast;
+import ngonim.xyz.yourweather.utils.GeneralFunctions;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static ngonim.xyz.yourweather.utils.GeneralFunctions.getJsonObject;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
@@ -65,8 +66,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private FirebaseRemoteConfig mFirebaseConfig;
     private boolean doubleBackToExitPressedOnce = false;
     private ProgressBar mProgressBar;
-    double lat;
-    double lon;
+    private GeneralFunctions mGeneralFunctions;
+    private double lat;
+    private double lon;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         mSummary = findViewById(R.id.summaryText);
         mLocationText = findViewById(R.id.locationText);
         mProgressBar = findViewById(R.id.progBar);
+        mGeneralFunctions = new GeneralFunctions();
 
         checkPermission();
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 1, this);
@@ -109,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.menu_refresh) {
-            if (!isNetworkAvailable()) {
+            if (!mGeneralFunctions.isNetworkAvailable()) {
                 Toast.makeText(this, getString(R.string.NO_DATA_CONN), Toast.LENGTH_SHORT).show();
             } else {
                 getForecast();
@@ -201,15 +204,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
             return;
         }
-
-
-        String forecast = "https://api.openweathermap.org/data/2.5/weather?" + "lat=" + lat + "&lon=" + lon
+        String BASE_URL = "https://api.openweathermap.org/data/2.5/weather?";
+        String url = BASE_URL + "lat=" + lat + "&lon=" + lon
                 + "&appid=" + BuildConfig.API_KEY + "&units=metric";
 
-        if (isNetworkAvailable()) {
+        if (mGeneralFunctions.isNetworkAvailable()) {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
-                    .url(forecast)
+                    .url(url)
                     .build();
 
             Call call = client.newCall(request);
@@ -317,30 +319,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return current;
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        boolean isAvailabe = false;
-        if (networkInfo != null && networkInfo.isConnected()) {
-            isAvailabe = true;
-        }
-        return isAvailabe;
-    }
-
-    private JSONObject getJsonObject(JSONArray arr, int position) {
-        try {
-            JSONObject obj_temp = arr.getJSONObject(position);
-
-            return obj_temp;
-
-        } catch (JSONException e) {
-//            e.printStackTrace();
-
-            return null;
-        }
-
-    }
 
     private Context getActivity() {
         return MainActivity.this;
