@@ -12,6 +12,12 @@ import org.json.JSONObject;
 
 public class GeneralFunctions extends AppCompatActivity {
 
+
+
+
+
+
+
     public static JSONObject getJsonObject(JSONArray arr, int position) {
         try {
             JSONObject obj_temp = arr.getJSONObject(position);

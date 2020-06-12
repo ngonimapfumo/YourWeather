@@ -214,7 +214,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         mProgressBar.setVisibility(View.VISIBLE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
             return;
         }
         String BASE_URL = "https://api.openweathermap.org/data/2.5/weather?";
@@ -244,15 +243,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         Log.v(TAG, jsonData);
 
                         if (response.isSuccessful()) {
-                            System.out.println("jData" + jsonData);
                             final JSONObject jsonObject = new JSONObject(jsonData);
-                                        /*{"coord":{"lon":30.92,"lat":-17.91},
-                                        "weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03d"}],
-                                        "base":"stations","main":{"temp":298.15,"feels_like":295.52,"temp_min":298.15,"temp_max":298.15,"pressure":1022,
-                                        "humidity":44},"visibility":10000,"wind":{"speed":4.6,"deg":160},"clouds":{"all":30},"dt":1585841416,"sys"
-                                        :{"type":1,"id":9723,"country":"ZW","sunrise":1585800162,"sunset":1585842994},"timezone":7200,"id":1106398,
-                                        "name":"Mbare","cod":200}*/
-
                             runOnUiThread(new Runnable() {
                                 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                                 @Override
