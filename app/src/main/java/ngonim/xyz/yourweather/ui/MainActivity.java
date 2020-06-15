@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private TextView mSummary;
     private ImageView mIconView;
     private TextView mLocationText;
-    private Location mLocation;
     private LocationManager mLocationManager;
     private FirebaseRemoteConfig mFirebaseConfig;
     private boolean doubleBackToExitPressedOnce = false;
@@ -213,9 +212,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private void getForecast() {
 
         mProgressBar.setVisibility(View.VISIBLE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
+        checkPermission();
         String BASE_URL = "https://api.openweathermap.org/data/2.5/weather?";
         String url = BASE_URL + "lat=" + lat + "&lon=" + lon
                 + "&appid=" + BuildConfig.API_KEY + "&units=metric";
