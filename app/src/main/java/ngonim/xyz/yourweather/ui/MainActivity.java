@@ -8,8 +8,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,6 +50,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static ngonim.xyz.yourweather.utils.GeneralFunctions.getJsonObject;
+import static ngonim.xyz.yourweather.utils.GeneralFunctions.isNetworkAvailable;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
@@ -89,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         mProgressBar = findViewById(R.id.progBar);
         mGeneralFunctions = new GeneralFunctions();
         checkPermission();
-
         checkGPS();
     }
 
@@ -113,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.menu_refresh) {
-            if (!isNetworkAvailable()) {
+            if (!isNetworkAvailable(MainActivity.this)) {
                 Toast.makeText(this, getString(R.string.NO_DATA_CONN), Toast.LENGTH_SHORT).show();
             } else {
                 getForecast();
@@ -137,19 +135,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        boolean isAvailabe = false;
-        if (networkInfo != null && networkInfo.isConnected()) {
-            isAvailabe = true;
-        }
-        return isAvailabe;
-    }
-
     private void GPSAlert(String title, String message, String positiveMessageButtonText) {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
         dialog.setTitle(title)
                 .setCancelable(false)
                 .setMessage(message)
@@ -180,12 +167,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
+        switch (requestCode) {
             case 123:
-                if(grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getForecast();
-                }
-                else {
+                } else {
                     finish();
                 }
         }
@@ -229,13 +215,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
 
     private void getForecast() {
-
         mProgressBar.setVisibility(View.VISIBLE);
         String BASE_URL = "https://api.openweathermap.org/data/2.5/weather?";
         String url = BASE_URL + "lat=" + lat + "&lon=" + lon
                 + "&appid=" + BuildConfig.API_KEY + "&units=metric";
 
-        if (isNetworkAvailable()) {
+        if (isNetworkAvailable(MainActivity.this)) {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     .url(url)
@@ -338,10 +323,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return current;
     }
 
-
-    private Context getActivity() {
-        return MainActivity.this;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //store coordinates in prefs file
     }
-
 }
 
