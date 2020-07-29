@@ -88,32 +88,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         mLocationText = findViewById(R.id.locationText);
         mProgressBar = findViewById(R.id.progBar);
         mGeneralFunctions = new GeneralFunctions();
+        checkPermission();
 
-        //checkPermission();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    123);
-        }else{        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 1, this);}
-        getForecast();
         checkGPS();
     }
 
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case 123:
-
-        }
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -185,17 +164,32 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     public void checkPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
         ) {
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 1, this);
+            getForecast();
+
+        } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     123);
         }
-        else{
-            Toast.makeText(MainActivity.this, "lest goo", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 123:
+                if(grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
+
+                }
+                else {
+                    finish();
+                }
         }
-        
+
     }
 
     @Override
@@ -237,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private void getForecast() {
 
         mProgressBar.setVisibility(View.VISIBLE);
-        checkPermission();
         String BASE_URL = "https://api.openweathermap.org/data/2.5/weather?";
         String url = BASE_URL + "lat=" + lat + "&lon=" + lon
                 + "&appid=" + BuildConfig.API_KEY + "&units=metric";
