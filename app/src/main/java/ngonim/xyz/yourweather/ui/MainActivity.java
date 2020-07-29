@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         switch (requestCode){
             case 123:
                 if(grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
-
+                    getForecast();
                 }
                 else {
                     finish();
