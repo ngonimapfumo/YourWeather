@@ -10,21 +10,23 @@
     android:paddingBottom="16dp"
     tools:context="ngonim.xyz.yourweather.ui.MainActivity">
 
-    <TextView
-        android:id="@+id/temperatureLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="32dp"
-        android:text="--"
-        android:textSize="150sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.028"
-        tools:text="19" />
+
+        <TextView
+            android:id="@+id/temperatureLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="32dp"
+            android:text="--"
+            android:textSize="150sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.028"
+            tools:text="19" />
+
 
 
     <ProgressBar
@@ -128,8 +130,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
 
-                android:text="PRECIPITATION CHANCE"
- />
+                android:text="PRECIPITATION CHANCE" />
 
             <TextView
                 android:id="@+id/precipValue"
@@ -174,7 +175,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iconImageView"
-        app:layout_constraintVertical_bias="0.376"
+        app:layout_constraintVertical_bias="0.0"
         tools:text="Mostly Cloudy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

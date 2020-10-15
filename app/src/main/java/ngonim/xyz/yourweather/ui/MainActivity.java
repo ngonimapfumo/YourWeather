@@ -1,7 +1,6 @@
 package ngonim.xyz.yourweather.ui;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -70,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private GeneralFunctions mGeneralFunctions;
     private double lat;
     private double lon;
+    private static final int CC = 12;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
